@@ -43,11 +43,15 @@ function App() {
 
             {
               user === "Admin" && <>
-                <Route path='/' element={<Navigate to='employees' />} />
-                <Route path='employees' element={<EmployeesPage />} />
-                <Route path='audit' element={<AuditPage />} />
-                <Route path='audit/employee/:employeeId' element={<AuditDetailPage />} />
-                <Route path='activities' element={<ActivitiesPage />} />
+                <Route path='/' element={<CompanyPage />}>
+                  <Route path="/" element={<Navigate to="employees"/>}/>
+
+                  <Route path='employees' element={<EmployeesPage />} />
+                  <Route path='audit' element={<AuditPage />} />
+                  <Route path='audit/employee/:employeeId' element={<AuditDetailPage />} />
+                  <Route path='activities' element={<ActivitiesPage />} />
+                  <Route path="*" element={<NoPage />}/>
+                </Route>
               </>
             }
             {
@@ -56,6 +60,7 @@ function App() {
                   <Route path='company/:companyId' element={<CompanyPage />}>
                     <Route path='audit' element={<AuditPage />} />
                     <Route path='audit/employee/:employeeId' element={<AuditDetailPage />} />
+                    <Route path="*" element={<NoPage />}/>
                   </Route>
                 </Route>
               </>
