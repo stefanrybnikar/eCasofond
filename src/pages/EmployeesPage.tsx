@@ -1,7 +1,8 @@
 import React from 'react';
+import EmployeesTable from '../components/EmployeesTable';
 
 const EmployeesPage: React.FC = () => <>
-        EmployeesPage
+        <EmployeesTable />
     </>;
 
 export default EmployeesPage;
