@@ -1,19 +1,71 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { Divider, Radio } from 'antd';
 import Navbar from './components/Navbar';
 import NoPage from './pages/NoPage';
 import LoginPage from './pages/LoginPage';
 import WelcomePage from './pages/WelcomePage';
+import EmployeePage from './pages/EmployeePage';
+import EmployeesPage from './pages/EmployeesPage';
+import AuditPage from './pages/AuditPage';
+import ActivitiesPage from './pages/ActivitiesPage';
+import AuditDetailPage from './pages/AuditDetailPage';
+import AuditorPage from './pages/AuditorPage';
+import CompanyPage from './pages/CompanyPage';
 
 function App() {
+
+  const [user, setUser] = useState('');
+
   return (
     <div className="App">
-        <Navbar />
         <BrowserRouter>
+        
+          <Navbar />
+          <Radio.Group options={[
+              { label: 'Admin', value: 'Admin' },
+              { label: 'Auditor', value: 'Auditor' },
+              { label: 'Employee', value: 'Employee' },
+            ]}
+            optionType='button'
+            value={user}
+            onChange={e => setUser(e.target.value)}
+          />
+          <Divider/>
+          
           <Routes>
-            <Route index element={<WelcomePage />}/>
-            <Route path="login" element={<LoginPage />}/>
+            <Route path="welcome" element={<WelcomePage />}/>
+
+            {
+              user === "" && <Route path="login" element={<LoginPage />}/>
+            }
+
+            {
+              user === "Admin" && <>
+                <Route path='/' element={<Navigate to='employees' />} />
+                <Route path='employees' element={<EmployeesPage />} />
+                <Route path='audit' element={<AuditPage />} />
+                <Route path='audit/employee/:employeeId' element={<AuditDetailPage />} />
+                <Route path='activities' element={<ActivitiesPage />} />
+              </>
+            }
+            {
+              user === "Auditor" && <>
+                <Route path='/' element={<AuditorPage />}>
+                  <Route path='company/:companyId' element={<CompanyPage />}>
+                    <Route path='audit' element={<AuditPage />} />
+                    <Route path='audit/employee/:employeeId' element={<AuditDetailPage />} />
+                  </Route>
+                </Route>
+              </>
+            }
+            {
+              user === "Employee" && <>
+                <Route path='/' element={<EmployeePage />}/>
+              </>
+            }
+
             <Route path="*" element={<NoPage />}/>
           </Routes>
         </BrowserRouter>
