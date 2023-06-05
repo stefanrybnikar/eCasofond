@@ -1,5 +1,5 @@
 import React from 'react';
 
-const NoPage: React.FC = () => <>login page</>;
+const NoPage: React.FC = () => <>not found</>;
 
 export default NoPage;
