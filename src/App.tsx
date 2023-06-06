@@ -13,7 +13,7 @@ import ActivitiesPage from './pages/ActivitiesPage';
 import AuditDetailPage from './pages/AuditDetailPage';
 import AuditorPage from './pages/AuditorPage';
 import CompanyPage from './pages/CompanyPage';
-import RolesPage from './pages/RolesPage';
+import ProfessionsPage from './pages/ProfessionsPage';
 
 function App() {
 
@@ -51,7 +51,7 @@ function App() {
                   <Route path='audit' element={<AuditPage />} />
                   <Route path='audit/employee/:employeeId' element={<AuditDetailPage />} />
                   <Route path='activities' element={<ActivitiesPage />} />
-                  <Route path='roles' element={<RolesPage />} />
+                  <Route path='professions' element={<ProfessionsPage />} />
                   <Route path="*" element={<NoPage />}/>
                 </Route>
               </>
@@ -65,7 +65,7 @@ function App() {
                     <Route path='audit' element={<AuditPage />} />
                     <Route path='audit/employee/:employeeId' element={<AuditDetailPage />} />
                     <Route path='activities' element={<ActivitiesPage />} />
-                    <Route path='roles' element={<RolesPage />} />
+                    <Route path='professions' element={<ProfessionsPage />} />
                     <Route path="*" element={<NoPage />}/>
                   </Route>
                 </Route>

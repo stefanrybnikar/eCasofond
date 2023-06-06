@@ -18,8 +18,8 @@ const CompanyPage: React.FC = () => {
           tab: 'Activities',
         },
         {
-          key: 'roles',
-          tab: 'Roles',
+          key: 'professions',
+          tab: 'Professions',
         },
     ];
 
