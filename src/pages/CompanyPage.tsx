@@ -17,6 +17,10 @@ const CompanyPage: React.FC = () => {
           key: 'activities',
           tab: 'Activities',
         },
+        {
+          key: 'professions',
+          tab: 'Professions',
+        },
     ];
 
     const navigate = useNavigate();

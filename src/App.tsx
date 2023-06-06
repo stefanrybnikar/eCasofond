@@ -13,6 +13,7 @@ import ActivitiesPage from './pages/ActivitiesPage';
 import AuditDetailPage from './pages/AuditDetailPage';
 import AuditorPage from './pages/AuditorPage';
 import CompanyPage from './pages/CompanyPage';
+import ProfessionsPage from './pages/ProfessionsPage';
 
 function App() {
 
@@ -50,6 +51,7 @@ function App() {
                   <Route path='audit' element={<AuditPage />} />
                   <Route path='audit/employee/:employeeId' element={<AuditDetailPage />} />
                   <Route path='activities' element={<ActivitiesPage />} />
+                  <Route path='professions' element={<ProfessionsPage />} />
                   <Route path="*" element={<NoPage />}/>
                 </Route>
               </>
@@ -58,8 +60,12 @@ function App() {
               user === "Auditor" && <>
                 <Route path='/' element={<AuditorPage />}>
                   <Route path='company/:companyId' element={<CompanyPage />}>
+
+                    <Route path='employees' element={<EmployeesPage />} />
                     <Route path='audit' element={<AuditPage />} />
                     <Route path='audit/employee/:employeeId' element={<AuditDetailPage />} />
+                    <Route path='activities' element={<ActivitiesPage />} />
+                    <Route path='professions' element={<ProfessionsPage />} />
                     <Route path="*" element={<NoPage />}/>
                   </Route>
                 </Route>
