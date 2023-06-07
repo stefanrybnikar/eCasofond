@@ -1,13 +1,64 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+:root {
+    --fc-small-font-size: .85em;
+    --fc-page-bg-color: #fff;
+    --fc-neutral-bg-color: hsla(0, 0%, 82%, .3);
+    --fc-neutral-text-color: #1677FF;
+    --fc-border-color: #e1e1e1;
+    --fc-button-text-color: #fff;
+    --fc-button-bg-color: #1677FF;
+    --fc-button-border-color: #1677FF;
+    --fc-button-hover-bg-color: #1677FF;
+    --fc-button-hover-border-color: #1677FF;
+    --fc-button-active-bg-color: #1677FF;
+    --fc-button-active-border-color: #1677FF;
+    --fc-event-bg-color: #1677FF;
+    --fc-event-border-color: #3788d8;
+    --fc-event-text-color: #fff;
+    --fc-event-selected-overlay-color: rgba(0, 0, 0, .25);
+    --fc-more-link-bg-color: #ffffff;
+    --fc-more-link-text-color: inherit;
+    --fc-event-resizer-thickness: 8px;
+    --fc-event-resizer-dot-total-width: 8px;
+    --fc-event-resizer-dot-border-width: 1px;
+    --fc-non-business-color: hsla(0, 0%, 84%, .3);
+    --fc-bg-event-color: #8fdf82;
+    --fc-bg-event-opacity: 0.3;
+    --fc-highlight-color: rgba(188, 232, 241, .3);
+    --fc-today-bg-color: rgb(36 124 255 / 16%);
+    --fc-now-indicator-color: red;
+}
+
+:where(.css-dev-only-do-not-override-k7429z) a {
+    color: #7a7a7a;
+    text-decoration: none;
+    background-color: transparent;
+    outline: none;
+    cursor: pointer;
+    transition: color 0.3s;
+    -webkit-text-decoration-skip: objects;
+}
+
+.fc .fc-toolbar-title {
+    font-size: 1.75em;
+    font-weight: 500;
+    margin: 0px;
+}
+
+.fc, .fc *, .fc ::after, .fc ::before {
+    box-sizing: border-box;
+    font-weight: 400;
 }

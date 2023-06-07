@@ -1,7 +1,8 @@
 import React from 'react';
+import EmployeeCalendar from '../components/EmployeeCalendar';
 
 const EmployeePage: React.FC = () => <>
-        EmployeePage
+        <EmployeeCalendar/>
     </>;
 
 export default EmployeePage;

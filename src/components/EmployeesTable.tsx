@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import {Space, Table, Input, Modal, Form, Button, Select} from 'antd';
 import {ColumnsType} from "antd/es/table";
+import Activities from "./Activities";
+import CreateUserButton from "./CreateUserButton";
 
 const {Option} = Select;
 
@@ -21,7 +23,7 @@ const data: DataType[] = [
     {
         key: '2',
         name: 'Jim Green',
-        role: 'Employee',
+        role: 'Auditor',
     },
     {
         key: '3',
@@ -133,6 +135,8 @@ const EmployeesTable: React.FC = () => {
                 size="middle"
                 onSearch={handleSearch}
             />
+            <CreateUserButton/>
+            <Activities/>
             <Table columns={columns} dataSource={filteredData}/>
 
             <Modal

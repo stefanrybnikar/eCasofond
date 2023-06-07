@@ -1,12 +1,12 @@
-import { Modal, Form, Input, Button } from 'antd';
-import { useState } from 'react';
-import { PlusCircleOutlined } from '@ant-design/icons';
+import {Modal, Form, Input, Button} from 'antd';
+import {useState} from 'react';
+import {PlusCircleOutlined} from '@ant-design/icons';
 
 interface AddCompanyButtonProps {
     onCreateCompany: (name: string) => void;
 }
 
-const AddCompanyButton: React.FC<AddCompanyButtonProps> = ({ onCreateCompany }) => {
+const AddCompanyButton: React.FC<AddCompanyButtonProps> = ({onCreateCompany}) => {
     const [visible, setVisible] = useState(false);
 
     const handleIconClick = () => {
@@ -29,14 +29,15 @@ const AddCompanyButton: React.FC<AddCompanyButtonProps> = ({ onCreateCompany }) 
 
     return (
         <>
-      <span onClick={handleIconClick} style={{ cursor: 'pointer' }}>
-        <PlusCircleOutlined style={{ color: 'blue', marginRight: 8 }} />
+      <span onClick={handleIconClick} style={{cursor: 'pointer'}}>
+        <PlusCircleOutlined style={{color: 'blue', marginRight: 8}}/>
       </span>
 
             <Modal visible={visible} title="Create a Company" onCancel={handleCancel} footer={null}>
                 <Form onFinish={handleFormSubmit}>
-                    <Form.Item name="name" label="Company Name" rules={[{ required: true, message: 'Please enter the company name' }]}>
-                        <Input />
+                    <Form.Item name="name" label="Company Name"
+                               rules={[{required: true, message: 'Please enter the company name'}]}>
+                        <Input/>
                     </Form.Item>
 
                     <Form.Item>

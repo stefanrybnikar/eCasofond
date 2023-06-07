@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import './App.css';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { Divider, Radio } from 'antd';
+import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom';
+import {Divider, Radio} from 'antd';
 import Navbar from './components/Navbar';
 import NoPage from './pages/NoPage';
 import LoginPage from './pages/LoginPage';
@@ -17,71 +17,71 @@ import ProfessionsPage from './pages/ProfessionsPage';
 
 function App() {
 
-  const [user, setUser] = useState('');
+    const [user, setUser] = useState('');
 
-  return (
-    <div className="App">
-        <BrowserRouter>
-        
-          <Navbar />
-          <Radio.Group options={[
-              { label: 'Admin', value: 'Admin' },
-              { label: 'Auditor', value: 'Auditor' },
-              { label: 'Employee', value: 'Employee' },
-            ]}
-            optionType='button'
-            value={user}
-            onChange={e => setUser(e.target.value)}
-          />
-          <Divider/>
-          
-          <Routes>
-            <Route path="welcome" element={<WelcomePage />}/>
+    return (
+        <div className="App">
+            <BrowserRouter>
 
-            {
-              user === "" && <Route path="login" element={<LoginPage />}/>
-            }
+                <Navbar/>
+                <Radio.Group options={[
+                    {label: 'Admin', value: 'Admin'},
+                    {label: 'Auditor', value: 'Auditor'},
+                    {label: 'Employee', value: 'Employee'},
+                ]}
+                             optionType='button'
+                             value={user}
+                             onChange={e => setUser(e.target.value)}
+                />
+                <Divider/>
 
-            {
-              user === "Admin" && <>
-                <Route path='/' element={<CompanyPage />}>
-                  <Route path="/" element={<Navigate to="employees"/>}/>
+                <Routes>
+                    <Route path="welcome" element={<WelcomePage/>}/>
 
-                  <Route path='employees' element={<EmployeesPage />} />
-                  <Route path='audit' element={<AuditPage />} />
-                  <Route path='audit/employee/:employeeId' element={<AuditDetailPage />} />
-                  <Route path='activities' element={<ActivitiesPage />} />
-                  <Route path='professions' element={<ProfessionsPage />} />
-                  <Route path="*" element={<NoPage />}/>
-                </Route>
-              </>
-            }
-            {
-              user === "Auditor" && <>
-                <Route path='/' element={<AuditorPage />}>
-                  <Route path='company/:companyId' element={<CompanyPage />}>
+                    {
+                        user === "" && <Route path="login" element={<LoginPage/>}/>
+                    }
 
-                    <Route path='employees' element={<EmployeesPage />} />
-                    <Route path='audit' element={<AuditPage />} />
-                    <Route path='audit/employee/:employeeId' element={<AuditDetailPage />} />
-                    <Route path='activities' element={<ActivitiesPage />} />
-                    <Route path='professions' element={<ProfessionsPage />} />
-                    <Route path="*" element={<NoPage />}/>
-                  </Route>
-                </Route>
-              </>
-            }
-            {
-              user === "Employee" && <>
-                <Route path='/' element={<EmployeePage />}/>
-              </>
-            }
+                    {
+                        user === "Admin" && <>
+                            <Route path='/' element={<CompanyPage/>}>
+                                <Route path="/" element={<Navigate to="employees"/>}/>
 
-            <Route path="*" element={<NoPage />}/>
-          </Routes>
-        </BrowserRouter>
-    </div>
-  );
+                                <Route path='employees' element={<EmployeesPage/>}/>
+                                <Route path='audit' element={<AuditPage/>}/>
+                                <Route path='audit/employee/:employeeId' element={<AuditDetailPage/>}/>
+                                <Route path='activities' element={<ActivitiesPage/>}/>
+                                <Route path='professions' element={<ProfessionsPage/>}/>
+                                <Route path="*" element={<NoPage/>}/>
+                            </Route>
+                        </>
+                    }
+                    {
+                        user === "Auditor" && <>
+                            <Route path='/' element={<AuditorPage/>}>
+                                <Route path='company/:companyId' element={<CompanyPage/>}>
+
+                                    <Route path='employees' element={<EmployeesPage/>}/>
+                                    <Route path='audit' element={<AuditPage/>}/>
+                                    <Route path='audit/employee/:employeeId' element={<AuditDetailPage/>}/>
+                                    <Route path='activities' element={<ActivitiesPage/>}/>
+                                    <Route path='professions' element={<ProfessionsPage/>}/>
+                                    <Route path="*" element={<NoPage/>}/>
+                                </Route>
+                            </Route>
+                        </>
+                    }
+                    {
+                        user === "Employee" && <>
+                            <Route path='/' element={<EmployeePage/>}/>
+                        </>
+                    }
+
+                    <Route path="*" element={<NoPage/>}/>
+                </Routes>
+            </BrowserRouter>
+        </div>
+    );
 }
 
 export default App;
