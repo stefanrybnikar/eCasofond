@@ -1,4 +1,4 @@
-const fetchUrl = "http://localhost:8080" // setup env
+const fetchUrl = "http://localhost:8080"
 
 export const get = async (link: string) => {
     return await fetch(fetchUrl + link,
@@ -21,4 +21,15 @@ export const post = async (link: string, data: object) => {
             },
             body: JSON.stringify(data),
         }).then(response => response.json())
+}
+
+export const del = async (link: string) => {
+  return await fetch(fetchUrl + link,
+      {
+          method: 'DELETE',
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+      }).then(response => response.json())
 }
