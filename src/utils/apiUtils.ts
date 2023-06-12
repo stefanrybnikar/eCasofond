@@ -1,6 +1,6 @@
 const fetchUrl = "http://localhost:8080"
 
-export const get = async (link: string) => {
+const get = async (link: string) => {
     return await fetch(fetchUrl + link,
         {
             method: 'GET',
@@ -11,7 +11,7 @@ export const get = async (link: string) => {
         }).then(response => response.json())
 }
 
-export const post = async (link: string, data: object) => {
+const post = async (link: string, data: object) => {
     return await fetch(fetchUrl + link,
         {
             method: 'POST',
@@ -23,7 +23,7 @@ export const post = async (link: string, data: object) => {
         }).then(response => response.json())
 }
 
-export const del = async (link: string) => {
+const del = async (link: string) => {
     return await fetch(fetchUrl + link,
         {
             method: 'DELETE',
@@ -33,3 +33,6 @@ export const del = async (link: string) => {
             },
         }).then(response => response.json())
 }
+
+
+export default { get, post, del }
