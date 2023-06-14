@@ -27,10 +27,10 @@ export const updateUser = createAsyncThunk(
 
 export const deleteUser = createAsyncThunk(
     'users/deleteUser',
-    async (usedId: number) => {
-        const response = await client.del(`/user/delete/${usedId}`);
+    async (userId: number) => {
+        const response = await client.del(`/user/delete/${userId}`);
         if (!response.ok) throw new Error("failed to delete")
-        return usedId;
+        return userId;
     }
 );
 
@@ -95,6 +95,15 @@ const usersSlice = createSlice({
 
 export default usersSlice.reducer;
 
+type UpdateUserBody = {
+    id: number;
+    displayName: string;
+    email: string;
+    username: string;
+    oldPassword: string;
+    password: string;
+}
+
 type AddUserBody = {
     companyId : number;
     roleId: number;
@@ -102,14 +111,5 @@ type AddUserBody = {
     displayName: string;
     email: string;
     username: string;
-    password: string;
-}
-
-type UpdateUserBody = {
-    id: number;
-    displayName: string;
-    email: string;
-    username: string;
-    oldPassword: string;
     password: string;
 }

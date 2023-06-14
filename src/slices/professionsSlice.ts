@@ -9,6 +9,31 @@ export const fetchProfessions = createAsyncThunk(
     }
 );
 
+export const addNewProfession = createAsyncThunk(
+    'professions/addNewProfession',
+    async (initialProfession: AddProfessionBody) => {
+        const response = await client.post('/profession/add', initialProfession);
+        return response;
+    }
+);
+
+export const updateProfession = createAsyncThunk(
+    'professions/updateProfession',
+    async (initialProfession: UpdateProfessionBody) => {
+        const response = await client.post('/profession/update', initialProfession);
+        return response;
+    }
+);
+
+export const deleteProfession = createAsyncThunk(
+    'professions/deleteProfession',
+    async (professionId: number) => {
+        const response = await client.del(`/profession/delete/${professionId}`);
+        if (!response.ok) throw new Error("Failed to delete");
+        return professionId;
+    }
+);
+
 interface ProfessionsState {
     professions: any[],
     status: 'idle' | 'loading' | 'succeeded' | 'failed',
@@ -37,8 +62,45 @@ const professionsSlice = createSlice({
             .addCase(fetchProfessions.rejected, (state, action) => {
                 state.status = 'failed'
                 state.error = action.error.message
+            });
+        builder
+            .addCase(addNewProfession.fulfilled, (state, action) => {
+                state.professions.push(action.payload);
+                state.error = null;
             })
+            .addCase(addNewProfession.rejected, (state, action) => {
+                state.error = 'failed to add';
+            });
+        builder
+            .addCase(updateProfession.fulfilled, (state, action) => {
+                const existingProfession = state.professions.find(profession => profession.id === action.payload.id);
+                if (existingProfession) {
+                    Object.assign(existingProfession, action.payload);
+                }
+                state.error = null;
+            })
+            .addCase(updateProfession.rejected, (state, action) => {
+                state.error = 'failed to update';
+            });
+        builder
+            .addCase(deleteProfession.fulfilled, (state, action) => {
+                state.professions = state.professions.filter(profession => profession.id !== action.payload);
+                state.error = null;
+            })
+            .addCase(deleteProfession.rejected, (state, action) => {
+                state.error = 'failed to delete';
+            });
+        
     }
 });
 
 export default professionsSlice.reducer;
+
+type UpdateProfessionBody = {
+    id: number;
+    name: string;
+}
+
+type AddProfessionBody = {
+    name: string;
+}
