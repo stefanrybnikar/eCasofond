@@ -37,7 +37,7 @@ const rolesSlice = createSlice({
             .addCase(fetchRoles.rejected, (state, action) => {
                 state.status = 'failed'
                 state.error = action.error.message
-            })
+            });
     }
 });
 

@@ -28,10 +28,7 @@ const del = async (link: string) => {
         {
             method: 'DELETE',
             mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        }).then(response => response.json())
+        })
 }
 
 
