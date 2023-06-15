@@ -11,10 +11,13 @@ import { fetchProfessions } from './slices/professionsSlice';
 import { fetchUsers } from './slices/usersSlice';
 import { fetchEntryTypes } from './slices/entryTypesSlice';
 import { fetchRoles } from './slices/rolesSlice';
+import client from './utils/apiUtils'
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
+client.token() // sets up bearer token for other api calls
 
 // store.dispatch(fetchCompanies());
 // store.dispatch(fetchEntries());
