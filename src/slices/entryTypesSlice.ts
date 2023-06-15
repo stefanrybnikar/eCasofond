@@ -4,7 +4,7 @@ import client from '../utils/apiUtils'
 export const fetchEntryTypes = createAsyncThunk(
     'entryTypes/fetchEntryTypes',
     async () => {
-        const response = await client.get('/entry-type/all');
+        const response = await client.get('/entrytype/all');
         return response;
     }
 );
@@ -12,7 +12,7 @@ export const fetchEntryTypes = createAsyncThunk(
 export const addNewEntryType = createAsyncThunk(
     'entryTypes/addNewEntryType',
     async (initialEntryType: AddEntryTypeBody) => {
-        const response = await client.post('/entry-type/add', initialEntryType);
+        const response = await client.post('/entrytype/add', initialEntryType);
         return response;
     }
 );
@@ -20,7 +20,7 @@ export const addNewEntryType = createAsyncThunk(
 export const updateEntryType = createAsyncThunk(
     'entryTypes/updateEntryType',
     async (initialEntryType: UpdateEntryTypeBody) => {
-        const response = await client.post('/entry-type/update', initialEntryType);
+        const response = await client.put('/entrytype/update', initialEntryType);
         return response;
     }
 );
@@ -28,7 +28,7 @@ export const updateEntryType = createAsyncThunk(
 export const deleteEntryType = createAsyncThunk(
     'entryTypes/deleteEntryType',
     async (entryTypeId: number) => {
-        const response = await client.del(`/entry-type/delete/${entryTypeId}`);
+        const response = await client.del(`/entrytype/delete/${entryTypeId}`);
         if (!response.ok) throw new Error("Failed to delete");
         return entryTypeId;
     }

@@ -20,7 +20,7 @@ export const addNewEntry = createAsyncThunk(
 export const updateEntry = createAsyncThunk(
     'entries/updateEntry',
     async (initialEntry: UpdateEntryBody) => {
-        const response = await client.post('/entry/update', initialEntry);
+        const response = await client.put('/entry/update', initialEntry);
         return response;
     }
 );
@@ -90,7 +90,6 @@ const entriesSlice = createSlice({
             .addCase(deleteEntry.rejected, (state, action) => {
                 state.error = 'failed to delete';
             });
-        
     }
 });
 

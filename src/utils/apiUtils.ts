@@ -29,6 +29,19 @@ const post = async (link: string, data: object) => {
         }).then(response => response.ok ? response.json() : false);
 };
 
+const put = async (link: string, data: object) => {
+    return await fetch(fetchUrl + link,
+        {
+            method: 'PUT',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authToken}`
+            },
+            body: JSON.stringify(data),
+        }).then(response => response.ok ? response.json() : false);
+};
+
 const del = async (link: string) => {
     return await fetch(fetchUrl + link,
         {
@@ -79,4 +92,4 @@ const token = async () => {
 };
 
 
-export default { get, post, del, token };
+export default { get, post, put, del, token };
