@@ -20,7 +20,7 @@ export const addNewCompany = createAsyncThunk(
 export const updateCompany = createAsyncThunk(
     'companies/updateCompany',
     async (initialCompany: UpdateCompanyBody) => {
-        const response = await client.post('/company/update', initialCompany);
+        const response = await client.put('/company/update', initialCompany);
         return response;
     }
 );

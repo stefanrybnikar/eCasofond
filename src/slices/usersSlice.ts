@@ -20,7 +20,7 @@ export const addNewUser = createAsyncThunk(
 export const updateUser = createAsyncThunk(
     'users/updateUser',
     async (initialUser: UpdateUserBody) => {
-        const response = await client.post('/user/update', initialUser);
+        const response = await client.put('/user/update', initialUser);
         return response;
     }
 );

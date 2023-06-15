@@ -4,7 +4,7 @@ import client from '../utils/apiUtils'
 export const fetchProfessions = createAsyncThunk(
     'professions/fetchProfessions',
     async () => {
-        const response = await client.get('/profession/all');
+        const response = await client.get('/professiontype/all');
         return response;
     }
 );
@@ -12,7 +12,7 @@ export const fetchProfessions = createAsyncThunk(
 export const addNewProfession = createAsyncThunk(
     'professions/addNewProfession',
     async (initialProfession: AddProfessionBody) => {
-        const response = await client.post('/profession/add', initialProfession);
+        const response = await client.post('/professiontype/add', initialProfession);
         return response;
     }
 );
@@ -20,7 +20,7 @@ export const addNewProfession = createAsyncThunk(
 export const updateProfession = createAsyncThunk(
     'professions/updateProfession',
     async (initialProfession: UpdateProfessionBody) => {
-        const response = await client.post('/profession/update', initialProfession);
+        const response = await client.put('/professiontype/update', initialProfession);
         return response;
     }
 );
@@ -28,7 +28,7 @@ export const updateProfession = createAsyncThunk(
 export const deleteProfession = createAsyncThunk(
     'professions/deleteProfession',
     async (professionId: number) => {
-        const response = await client.del(`/profession/delete/${professionId}`);
+        const response = await client.del(`/professiontype/delete/${professionId}`);
         if (!response.ok) throw new Error("Failed to delete");
         return professionId;
     }
