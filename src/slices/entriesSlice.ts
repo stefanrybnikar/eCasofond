@@ -5,7 +5,7 @@ export const fetchEntries = createAsyncThunk(
     'entries/fetchEntries',
     async () => {
         const response = await client.get('/entry/all');
-        return response;
+        return response.data;
     }
 );
 
@@ -13,7 +13,7 @@ export const addNewEntry = createAsyncThunk(
     'entries/addNewEntry',
     async (initialEntry: AddEntryBody) => {
         const response = await client.post('/entry/add', initialEntry);
-        return response;
+        return response.data;
     }
 );
 
@@ -21,7 +21,7 @@ export const updateEntry = createAsyncThunk(
     'entries/updateEntry',
     async (initialEntry: UpdateEntryBody) => {
         const response = await client.put('/entry/update', initialEntry);
-        return response;
+        return response.data;
     }
 );
 

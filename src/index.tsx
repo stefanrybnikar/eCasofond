@@ -17,14 +17,19 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
-client.token() // sets up bearer token for other api calls
+const load = async () => {
 
-// store.dispatch(fetchCompanies());
-// store.dispatch(fetchEntries());
-// store.dispatch(fetchProfessions());
-// store.dispatch(fetchUsers());
-// store.dispatch(fetchEntryTypes());
-// store.dispatch(fetchRoles());
+  await client.token() // sets up bearer token for other api calls
+  
+  // store.dispatch(fetchCompanies());
+  // store.dispatch(fetchEntries());
+  // store.dispatch(fetchProfessions());
+  // store.dispatch(fetchUsers());
+  // store.dispatch(fetchEntryTypes());
+  // store.dispatch(fetchRoles());
+}
+
+load()
 
 root.render(
   <React.StrictMode>

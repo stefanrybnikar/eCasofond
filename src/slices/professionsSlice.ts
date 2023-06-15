@@ -5,7 +5,7 @@ export const fetchProfessions = createAsyncThunk(
     'professions/fetchProfessions',
     async () => {
         const response = await client.get('/professiontype/all');
-        return response;
+        return response.data;
     }
 );
 
@@ -13,7 +13,7 @@ export const addNewProfession = createAsyncThunk(
     'professions/addNewProfession',
     async (initialProfession: AddProfessionBody) => {
         const response = await client.post('/professiontype/add', initialProfession);
-        return response;
+        return response.data;
     }
 );
 
@@ -21,7 +21,7 @@ export const updateProfession = createAsyncThunk(
     'professions/updateProfession',
     async (initialProfession: UpdateProfessionBody) => {
         const response = await client.put('/professiontype/update', initialProfession);
-        return response;
+        return response.data;
     }
 );
 
