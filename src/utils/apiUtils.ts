@@ -87,8 +87,7 @@ const token = async () => {
                 'Authorization': `Basic ${basicAuth}`
             }
         });
-    authToken = await response.text();
-    console.log(authToken);
+    authToken = await response.json().then(response => response.data);
 };
 
 

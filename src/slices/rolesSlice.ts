@@ -5,7 +5,7 @@ export const fetchRoles = createAsyncThunk(
     'roles/fetchRoles',
     async () => {
         const response = await client.get('/role/all');
-        return response;
+        return response.data;
     }
 );
 

@@ -5,7 +5,7 @@ export const fetchCompanies = createAsyncThunk(
     'companies/fetchCompanies',
     async () => {
         const response = await client.get('/company/all');
-        return response;
+        return response.data;
     }
 );
 
@@ -13,7 +13,7 @@ export const addNewCompany = createAsyncThunk(
     'companies/addNewCompany',
     async (initialCompany: AddCompanyBody) => {
         const response = await client.post('/company/add', initialCompany);
-        return response;
+        return response.data;
     }
 );
 
@@ -21,7 +21,7 @@ export const updateCompany = createAsyncThunk(
     'companies/updateCompany',
     async (initialCompany: UpdateCompanyBody) => {
         const response = await client.put('/company/update', initialCompany);
-        return response;
+        return response.data;
     }
 );
 

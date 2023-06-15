@@ -5,7 +5,7 @@ export const fetchUsers = createAsyncThunk(
     'users/fetchUsers',
     async () => {
         const response = await client.get('/user/all');
-        return response;
+        return response.data;
     }
 );
 
@@ -13,7 +13,7 @@ export const addNewUser = createAsyncThunk(
     'users/addNewUser',
     async (initialUser: AddUserBody) => {
         const response = await client.post('/user/add', initialUser);
-        return response;
+        return response.data;
     }
 );
 
@@ -21,7 +21,7 @@ export const updateUser = createAsyncThunk(
     'users/updateUser',
     async (initialUser: UpdateUserBody) => {
         const response = await client.put('/user/update', initialUser);
-        return response;
+        return response.data;
     }
 );
 
