@@ -6,6 +6,7 @@ import entriesReducer from "../slices/entriesSlice";
 import professionsReducer from "../slices/professionsSlice";
 import entryTypesReducer from "../slices/entryTypesSlice";
 import rolesReducer from "../slices/rolesSlice";
+import professionTypeEntryTypesReducer from "../slices/professionTypeEntryTypesSlice";
 
 const store = configureStore({
   reducer: {
@@ -14,7 +15,8 @@ const store = configureStore({
     entries: entriesReducer,
     professions: professionsReducer,
     entryTypes: entryTypesReducer,
-    roles: rolesReducer
+    roles: rolesReducer,
+    professionTypeEntryTypes: professionTypeEntryTypesReducer
   }
 })
 
