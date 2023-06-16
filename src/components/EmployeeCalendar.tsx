@@ -1,18 +1,24 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import {EventContentArg} from '@fullcalendar/core';
-import {TimePicker} from 'antd';
+import {InputNumber, Select, TimePicker} from 'antd';
 import {Button, Dropdown, Menu, Modal, Input, Form, DatePicker} from 'antd';
 import {useTranslation} from 'react-i18next';
+import { useAppDispatch, useAppSelector } from '../utils/hooks';
+import { addNewEntry, fetchEntries } from '../slices/entriesSlice';
+import { fetchEntryTypes } from '../slices/entryTypesSlice';
 
 interface CalendarEvent {
     start: string;
-    entries: {
-        type: string;
-        time: number;
-        description?: string;
-    }[];
+    entries: any[];
+}
+
+type EntryInputForm = {
+    hourCount: number;
+    typeId: number;
+    day: Date;
+    description: string;
 }
 
 const EmployeeCalendar: React.FC = () => {
@@ -24,34 +30,61 @@ const EmployeeCalendar: React.FC = () => {
     const [] = useState<number | undefined>(undefined);
     const [] = useState<string>('');
 
-    const events: CalendarEvent[] = [
-        {
-            start: '2023-05-31',
-            entries: [
-                {
-                    type: 'Washing laptops',
-                    time: 4,
-                },
-                {
-                    type: 'Fixing cables',
-                    time: 3,
-                },
-            ],
-        },
-        {
-            start: '2023-06-06',
-            entries: [
-                {
-                    type: 'Washing laptops',
-                    time: 4,
-                },
-                {
-                    type: 'Fixing cables',
-                    time: 3,
-                },
-            ],
-        },
-    ];
+    const currentUserId = 2; //TODO HARD CODED NEED TO REPLACE LATER
+
+    const dispatch = useAppDispatch();
+    
+    const userEntries = useAppSelector(state => state.entries.entries.filter(entry => entry.userId === currentUserId)).map(entry => { //remove map function afetr day value is implemented on backend, aiwen pls
+        return {
+            day: '2023-06-16',
+            ...entry
+        }
+    });
+
+    const entriesStatus = useAppSelector(state => state.entries.status);
+
+    const entriesError = useAppSelector(state => state.entries.error);
+
+    useEffect(() => {
+        if(entriesStatus === 'idle')
+            dispatch(fetchEntries());
+    }, [entriesStatus, dispatch]);
+
+
+    const entryTypes = useAppSelector(state => state.entryTypes.entryTypes).map(entryType => {
+        return {
+            value: entryType.id,
+            label: entryType.name
+        };
+    });
+
+    const entryTypesStatus = useAppSelector(state => state.entries.status);
+
+    useEffect(() => {
+        if(entryTypesStatus === 'idle')
+            dispatch(fetchEntryTypes());
+    }, [entryTypesStatus, dispatch]);
+
+
+    const groupedEntriesByDays = userEntries.reduce((groups, obj) => {
+        const { day } = obj;
+        
+        if (!groups[day]) {
+          groups[day] = [];
+        }
+        
+        groups[day].push(obj);
+        
+        return groups;
+      }, {});
+
+
+    const events: CalendarEvent[] = Object.keys(groupedEntriesByDays).map((key, value) => {
+        return {
+            start: key,
+            entries: groupedEntriesByDays[key]
+        }
+    });
 
     const customEvent = (content: EventContentArg) => {
         const entries = content.event.extendedProps.entries;
@@ -71,7 +104,7 @@ const EmployeeCalendar: React.FC = () => {
                                     overflow: 'hidden',
                                 }}
                             >
-                                {entry.time}h - {entry.type}
+                                {entry.hourCount}h - {entry.description}
                             </div>
                         </div>
                     ))}
@@ -115,27 +148,16 @@ const EmployeeCalendar: React.FC = () => {
         setModalVisible(false);
     };
 
-    const handleJobFormFinish = (values: any) => {
-        const {timeSpent, timeRange, description} = values;
-
-        const startTime = timeRange[0].format('YYYY-MM-DDTHH:mm:ss');
-        const endTime = timeRange[1].format('YYYY-MM-DDTHH:mm:ss');
-
-        const newEntry = {
-            type: 'job',
-            time: timeSpent,
-            description: description,
-        };
-
-        const newEvent = {
-            start: startTime,
-            end: endTime,
-            entries: [newEntry],
-        };
-
-        if (calendarRef.current) {
-            calendarRef.current.getApi().addEvent(newEvent);
-        }
+    const handleJobFormFinish = async (data: EntryInputForm) => {
+        const {hourCount, typeId, day, description} = data;
+        
+        console.log(data)
+        // await dispatch(addNewEntry({
+        //     userId: currentUserId,
+        //     typeId: 1,
+        //     description,
+        //     hourCount,
+        // }));
 
         setModalVisible(false);
     };
@@ -199,15 +221,19 @@ const EmployeeCalendar: React.FC = () => {
                 onCancel={handleJobModalCancel}
             >
                 <Form id="jobForm" onFinish={handleJobFormFinish}>
-                    <Form.Item name="timeSpent" label={t('timespent')}>
-                        <DatePicker/>
+                    <Form.Item name="hourCount" label={t('timespent')}>
+                        <InputNumber/>
                     </Form.Item>
-                    <Form.Item name="timeRange" label={t('timerange')}>
-                        <TimePicker.RangePicker/>
+                    <Form.Item name="typeId" label={t('entryselect')}>
+                        <Select defaultValue={entryTypes[0]} options={entryTypes}/>
+                    </Form.Item>
+                    <Form.Item name="day" label={t('timerange')}>
+                        <DatePicker/>
                     </Form.Item>
                     <Form.Item name="description" label={t('description')}>
                         <Input.TextArea/>
                     </Form.Item>
+                    
                 </Form>
             </Modal>
 
