@@ -1,11 +1,11 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import client from '../utils/apiUtils'
+import {createSlice, PayloadAction, createAction, createAsyncThunk} from "@reduxjs/toolkit";
+import client from '../utils/apiUtils';
 
 export const fetchUsers = createAsyncThunk(
     'users/fetchUsers',
     async () => {
         const response = await client.get('/user/all');
-        return response.data;
+        return response.data; // Assuming the response data is an array of users
     }
 );
 
@@ -34,10 +34,20 @@ export const deleteUser = createAsyncThunk(
     }
 );
 
+// Define the createJob action creator using createAction
+export const createJob = createAction<User>('users/createJob');
+
+interface User {
+    // Define the user type here
+    id: number;
+    name: string;
+    // ...
+}
+
 interface UsersState {
-    users: any[],
-    status: 'idle' | 'loading' | 'succeeded' | 'failed',
-    error: any
+    users: User[];
+    status: 'idle' | 'loading' | 'succeeded' | 'failed';
+    error: any;
 }
 
 const initialState: UsersState = {
@@ -49,10 +59,14 @@ const initialState: UsersState = {
 const usersSlice = createSlice({
     name: 'users',
     initialState,
-    reducers: {},
+    reducers: {
+        createUser: (state, action: PayloadAction<User>) => {
+            state.users.push(action.payload);
+        },
+    },
     extraReducers: (builder) => {
         builder
-            .addCase(fetchUsers.pending, (state, action) => {
+            .addCase(fetchUsers.pending, (state) => {
                 state.status = 'loading';
             })
             .addCase(fetchUsers.fulfilled, (state, action) => {
@@ -93,6 +107,7 @@ const usersSlice = createSlice({
     }
 });
 
+export const {createUser} = usersSlice.actions;
 export default usersSlice.reducer;
 
 type UpdateUserBody = {

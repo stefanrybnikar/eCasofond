@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {Space, Table, Input, Modal, Form, Button} from 'antd';
 import {ColumnsType} from 'antd/es/table';
 import Activities from './Activities';
-import CreateUserButton from './CreateUserButton';
+import {useTranslation} from 'react-i18next';
 
 const {Search} = Input;
 
@@ -35,13 +35,13 @@ const ProfessionTable: React.FC = () => {
     const [selectedRecord, setSelectedRecord] = useState<DataType | undefined>(undefined);
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [form] = Form.useForm();
+    const {t} = useTranslation();
 
     useEffect(() => {
         form.resetFields();
     }, [form, selectedRecord]);
 
     const handleSearch = (value: string) => {
-        // Filtrujte data na základě hledané hodnoty
         const filtered = data.filter((item) =>
             item.profession.toLowerCase().includes(value.toLowerCase())
         );
@@ -61,7 +61,6 @@ const ProfessionTable: React.FC = () => {
 
     const handleModalOk = () => {
         form.validateFields().then((values) => {
-            // Aktualizujte záznam s novými hodnotami
             const updatedData = filteredData.map((item) => {
                 if (item.key === selectedRecord?.key) {
                     return {
@@ -84,17 +83,17 @@ const ProfessionTable: React.FC = () => {
 
     const columns: ColumnsType<DataType> = [
         {
-            title: 'Profese',
+            title: String(t('profession')),
             dataIndex: 'profession',
             key: 'profession',
         },
         {
-            title: 'Administrace uživatele',
+            title: String(t('useradministration')),
             key: 'action',
             render: (_: any, record: DataType) => (
                 <Space size="middle">
-                    <a onClick={() => handleEdit(record)}>Upravit</a>
-                    <a onClick={() => handleDelete(record)}>Smazat</a>
+                    <a onClick={() => handleEdit(record)}>{String(t('edit'))}</a>
+                    <a onClick={() => handleDelete(record)}>{String(t('delete'))}</a>
                 </Space>
             ),
         },
@@ -104,8 +103,8 @@ const ProfessionTable: React.FC = () => {
         <>
             <Search
                 style={{maxWidth: '220px', marginLeft: 'auto', marginBottom: '10px', marginRight: '1rem'}}
-                placeholder="Hledat podle profesního titulu"
-                enterButton="Hledat"
+                placeholder={String(t('searchforaprofession'))}
+                enterButton={String(t('search'))}
                 size="middle"
                 onSearch={handleSearch}
             />
@@ -113,7 +112,7 @@ const ProfessionTable: React.FC = () => {
             <Table columns={columns} dataSource={filteredData}/>
 
             <Modal
-                title="Upravit záznam"
+                title={String(t('edit'))}
                 visible={modalVisible}
                 onOk={handleModalOk}
                 onCancel={handleModalCancel}
@@ -122,8 +121,8 @@ const ProfessionTable: React.FC = () => {
                       style={{width: '80%', display: 'flex', flexDirection: 'column'}}>
                     <Form.Item
                         name="profession"
-                        label="Profese"
-                        rules={[{required: true, message: 'Prosím zadejte profesní titul'}]}
+                        label={String(t('profession'))}
+                        rules={[{required: true, message: String(t('warningjob'))}]}
                     >
                         <Input/>
                     </Form.Item>

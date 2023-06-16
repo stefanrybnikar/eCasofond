@@ -91,4 +91,4 @@ const token = async () => {
 };
 
 
-export default { get, post, put, del, token };
+export default {get, post, put, del, token};

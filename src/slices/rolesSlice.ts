@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import client from '../utils/apiUtils'
 
 export const fetchRoles = createAsyncThunk(

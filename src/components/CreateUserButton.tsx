@@ -1,10 +1,16 @@
 import React, {useState} from 'react';
 import {Button, Modal, Form, Input, Select} from 'antd';
+import {useTranslation} from 'react-i18next';
+import {useDispatch} from 'react-redux';
+import {createUser} from "../slices/usersSlice";
 import {UserOutlined} from '@ant-design/icons';
+import {TFunction} from 'i18next';
 
 const {Option} = Select;
 
 const CreateUserButton: React.FC = () => {
+    const {t}: { t: TFunction } = useTranslation();
+    const dispatch = useDispatch();
     const [modalVisible, setModalVisible] = useState(false);
     const [form] = Form.useForm();
 
@@ -13,13 +19,18 @@ const CreateUserButton: React.FC = () => {
     };
 
     const handleModalOk = () => {
-        form.validateFields().then((values) => {
-            // Vytvořit nového uživatele s hodnotami z formuláře
-            // Přidat nového uživatele do seznamu dat
-            setModalVisible(false);
-            form.resetFields();
-        });
+        form
+            .validateFields()
+            .then((values) => {
+                dispatch(createUser(values)); // Dispatch the createUser action with form values
+                setModalVisible(false);
+                form.resetFields();
+            })
+            .catch((error) => {
+                console.log('Form validation error:', error);
+            });
     };
+
 
     const handleModalCancel = () => {
         setModalVisible(false);
@@ -28,13 +39,17 @@ const CreateUserButton: React.FC = () => {
 
     return (
         <>
-            <Button style={{marginRight: '1rem', marginLeft: '1rem'}} type="primary" size="middle"
-                    onClick={handleCreateUser}>
-                Create User +
+            <Button
+                style={{marginRight: '1rem', marginLeft: '1rem'}}
+                type="primary"
+                size="middle"
+                onClick={handleCreateUser}
+            >
+                {t('createuser+')}
             </Button>
 
             <Modal
-                title="Create User"
+                title={t('createuser')}
                 visible={modalVisible}
                 onOk={handleModalOk}
                 onCancel={handleModalCancel}
@@ -42,20 +57,20 @@ const CreateUserButton: React.FC = () => {
                 <Form form={form}>
                     <Form.Item
                         name="name"
-                        label="Name"
-                        rules={[{required: true, message: 'Please enter a name'}]}
+                        label={t('name')}
+                        rules={[{required: true, message: String(t('warninguser'))}]}
                     >
                         <Input/>
                     </Form.Item>
                     <Form.Item
                         name="role"
-                        label="Roles"
-                        rules={[{required: true, message: 'Please select a role'}]}
+                        label={t('role')}
+                        rules={[{required: true, message: String(t('warningrole'))}]}
                     >
                         <Select>
-                            <Option value="Admin">Admin</Option>
-                            <Option value="Auditor">Auditor</Option>
-                            <Option value="Employee">Employee</Option>
+                            <Option value="Admin">{t('admin')}</Option>
+                            <Option value="Auditor">{t('auditor')}</Option>
+                            <Option value="Employee">{t('employee')}</Option>
                         </Select>
                     </Form.Item>
                 </Form>

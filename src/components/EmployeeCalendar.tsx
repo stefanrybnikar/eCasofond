@@ -4,17 +4,27 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import {EventContentArg} from '@fullcalendar/core';
 import {TimePicker} from 'antd';
 import {Button, Dropdown, Menu, Modal, Input, Form, DatePicker} from 'antd';
+import {useTranslation} from 'react-i18next';
+
+interface CalendarEvent {
+    start: string;
+    entries: {
+        type: string;
+        time: number;
+        description?: string;
+    }[];
+}
 
 const EmployeeCalendar: React.FC = () => {
+    const {t} = useTranslation();
     const {RangePicker} = DatePicker;
-    const App: React.FC = () => <TimePicker.RangePicker/>;
     const calendarRef = useRef<FullCalendar>(null);
-    const [addEntryType, setAddEntryType] = useState<string | null>(null); // Udržuje vybraný typ přidávané položky
+    const [addEntryType, setAddEntryType] = useState<string | null>(null);
     const [modalVisible, setModalVisible] = useState<boolean>(false);
-    const [entryTime, setEntryTime] = useState<number | undefined>(undefined);
-    const [entryDescription, setEntryDescription] = useState<string>('');
+    const [] = useState<number | undefined>(undefined);
+    const [] = useState<string>('');
 
-    const events = [
+    const events: CalendarEvent[] = [
         {
             start: '2023-05-31',
             entries: [
@@ -70,46 +80,25 @@ const EmployeeCalendar: React.FC = () => {
     };
 
     const handleAddEvent = () => {
-        // Logika pro přidání události
-        const newEvent = {
-            start: '2023-06-10',
-            entries: [
-                {
-                    type: addEntryType || 'New Event',
-                    time: entryTime || 0,
-                    description: entryDescription,
-                },
-            ],
-        };
-
-        if (calendarRef.current) {
-            calendarRef.current.getApi().addEvent(newEvent);
-        }
-
-        // Resetování hodnot
-        setAddEntryType(null);
-        setEntryTime(undefined);
-        setEntryDescription('');
-        setModalVisible(false);
+        // logika přidání události
     };
 
-    // Obsluha výběru typu položky
     const handleMenuClick = (e: any) => {
         setAddEntryType(e.key);
         setModalVisible(true);
     };
 
-    // Dropdown menu obsahující položky pro přidání
     const addEntryMenu = (
         <Menu onClick={handleMenuClick}>
-            <Menu.Item key="job">Add job</Menu.Item>
-            <Menu.Item key="holiday">Add holiday</Menu.Item>
+            <Menu.Item key="job">{t('addjob')}</Menu.Item>
+            <Menu.Item key="holiday">{t('addholiday')}</Menu.Item>
         </Menu>
     );
 
     const handleJobModalOk = () => {
         const form = document.querySelector('#jobForm') as HTMLFormElement;
         form.dispatchEvent(new Event('submit'));
+        setModalVisible(false);
     };
 
     const handleJobModalCancel = () => {
@@ -119,6 +108,7 @@ const EmployeeCalendar: React.FC = () => {
     const handleHolidayModalOk = () => {
         const form = document.querySelector('#holidayForm') as HTMLFormElement;
         form.dispatchEvent(new Event('submit'));
+        setModalVisible(false);
     };
 
     const handleHolidayModalCancel = () => {
@@ -126,66 +116,112 @@ const EmployeeCalendar: React.FC = () => {
     };
 
     const handleJobFormFinish = (values: any) => {
-        console.log('Job Form values:', values);
+        const {timeSpent, timeRange, description} = values;
+
+        const startTime = timeRange[0].format('YYYY-MM-DDTHH:mm:ss');
+        const endTime = timeRange[1].format('YYYY-MM-DDTHH:mm:ss');
+
+        const newEntry = {
+            type: 'job',
+            time: timeSpent,
+            description: description,
+        };
+
+        const newEvent = {
+            start: startTime,
+            end: endTime,
+            entries: [newEntry],
+        };
+
+        if (calendarRef.current) {
+            calendarRef.current.getApi().addEvent(newEvent);
+        }
+
         setModalVisible(false);
     };
 
     const handleHolidayFormFinish = (values: any) => {
-        console.log('Holiday Form values:', values);
+        const {duration, description} = values;
+
+        const startDate = duration[0].format('YYYY-MM-DD');
+        const endDate = duration[1].format('YYYY-MM-DD');
+
+        const newEntry = {
+            type: 'holiday',
+            description: description,
+        };
+
+        const newEvent = {
+            start: startDate,
+            end: endDate,
+            entries: [newEntry],
+        };
+
+        if (calendarRef.current) {
+            calendarRef.current.getApi().addEvent(newEvent);
+        }
+
         setModalVisible(false);
+    };
+
+    const calendarOptions = {
+        events,
+        plugins: [dayGridPlugin],
+        initialView: 'dayGridWeek',
+        headerToolbar: {
+            start: 'title',
+            center: '',
+            end: 'dayGridMonth,dayGridWeek today prev,next',
+        },
+        eventContent: customEvent,
+        height: '75vh',
+        buttonText: {
+            today: t('today') as string,
+            month: t('month') as string,
+            week: t('week') as string,
+        },
     };
 
     return (
         <div>
-            <FullCalendar
-                events={events}
-                ref={calendarRef}
-                plugins={[dayGridPlugin]}
-                initialView={'dayGridWeek'}
-                headerToolbar={{
-                    start: 'title',
-                    center: '',
-                    end: 'dayGridMonth,dayGridWeek today prev,next',
-                }}
-                eventContent={customEvent}
-                height={'75vh'}
-            />
+            <FullCalendar {...calendarOptions} ref={calendarRef}/>
 
             <Dropdown overlay={addEntryMenu} trigger={['click']}>
                 <Button type="primary" size="large" style={{marginTop: '10px'}}>
-                    Add+
+                    {t('add+')}
                 </Button>
             </Dropdown>
+
             <Modal
-                title="Add Job"
+                title={t('addjob')}
                 visible={modalVisible && addEntryType === 'job'}
                 onOk={handleJobModalOk}
                 onCancel={handleJobModalCancel}
             >
                 <Form id="jobForm" onFinish={handleJobFormFinish}>
-                    <Form.Item name="timeSpent" label="Time Spent">
+                    <Form.Item name="timeSpent" label={t('timespent')}>
                         <DatePicker/>
                     </Form.Item>
-                    <Form.Item name="timeRange" label="Time Range">
+                    <Form.Item name="timeRange" label={t('timerange')}>
                         <TimePicker.RangePicker/>
                     </Form.Item>
-                    <Form.Item name="description" label="Description">
+                    <Form.Item name="description" label={t('description')}>
                         <Input.TextArea/>
                     </Form.Item>
                 </Form>
             </Modal>
 
             <Modal
-                title="Add Holiday"
+                title={t('addholiday')}
                 visible={modalVisible && addEntryType === 'holiday'}
                 onOk={handleHolidayModalOk}
                 onCancel={handleHolidayModalCancel}
             >
                 <Form id="holidayForm" onFinish={handleHolidayFormFinish}>
-                    <Form.Item name="duration" label="Duration">
+                    <Form.Item name="duration" label={t('selectdate')}>
                         <RangePicker/>
                     </Form.Item>
-                    <Form.Item name="description" label="Description">
+                    <Form.Item name="description" label={t('description')}>
                         <Input.TextArea/>
                     </Form.Item>
                 </Form>
