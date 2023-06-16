@@ -94,6 +94,8 @@ const entriesSlice = createSlice({
     }
 });
 
+export default entriesSlice.reducer;
+
 type UpdateEntryBody = {
     id: number;
     typeId: number;
