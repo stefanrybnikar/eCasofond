@@ -1,3 +1,4 @@
+// entriesSlice.ts
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import client from '../utils/apiUtils'
 
@@ -32,7 +33,7 @@ const entriesSlice = createSlice({
             })
             .addCase(fetchEntries.fulfilled, (state, action) => {
                 state.status = 'succeeded'
-                state.entries = state.entries.concat(action.payload)
+                state.entries = action.payload
             })
             .addCase(fetchEntries.rejected, (state, action) => {
                 state.status = 'failed'

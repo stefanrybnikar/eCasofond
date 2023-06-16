@@ -35,4 +35,4 @@ const del = async (link: string) => {
 }
 
 
-export default { get, post, del }
+export default {get, post, del}

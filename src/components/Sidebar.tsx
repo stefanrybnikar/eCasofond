@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {PlusCircleOutlined, EditOutlined} from '@ant-design/icons';
 import {Layout, Menu, theme, Input, Modal} from 'antd';
 import AddCompanyButton from './AddCompanyButton';
-import { Outlet } from 'react-router';
+import {Outlet} from 'react-router';
 
 const {Content, Sider} = Layout;
 const {Search} = Input;
@@ -43,7 +43,7 @@ const Sidebar: React.FC = () => {
     return (
         <Sider style={{background: colorBgContainer}} width={300}>
             <Menu mode="inline" defaultSelectedKeys={['1']} defaultOpenKeys={['sub1']}
-                    style={{height: '100%'}}>
+                  style={{height: '100%'}}>
                 <Menu.SubMenu
                     key="sub1"
                     title={
