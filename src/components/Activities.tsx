@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Button, Modal, Form, Input, Select} from 'antd';
 import {UserOutlined} from '@ant-design/icons';
 import {useSelector, useDispatch} from 'react-redux';
-import {fetchUsers, createJob} from '../slices/usersSlice';
+import {fetchUsers} from '../slices/usersSlice';
 import {RootState} from "../utils/store";
 import { AnyAction, Dispatch, Action } from 'redux';
 
@@ -22,7 +22,7 @@ const Activities: React.FC = () => {
 
     const handleModalOk = () => {
         form.validateFields().then((values) => {
-            dispatch(createJob(values)); // Dispatch the createJob action with form values
+            //dispatch(createJob(values)); // Dispatch the createJob action with form values
             setModalVisible(false);
             form.resetFields();
         });
