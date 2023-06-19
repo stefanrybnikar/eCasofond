@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import './App.css';
 import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom';
-import {Divider, Radio} from 'antd';
+import {Divider, Input, Radio} from 'antd';
 import Navbar from './components/Navbar';
 import NoPage from './pages/NoPage';
 import LoginPage from './pages/LoginPage';
@@ -32,7 +32,8 @@ function App() {
                              optionType='button'
                              value={user}
                              onChange={e => setUser(e.target.value)}
-                />
+                />  
+                <div style={{width: 200}}>current user[id]:<Input width={100} placeholder='current user userId'/></div>
                 <Divider/>
 
                 <Routes>

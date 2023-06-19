@@ -1,88 +1,86 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {Space, Table, Input, Modal, Form, Button, Select} from 'antd';
-import {ColumnsType} from "antd/es/table";
-import Activities from "./Activities";
-import CreateUserButton from "./CreateUserButton";
+import {ColumnsType} from 'antd/es/table';
+import {useTranslation} from 'react-i18next';
+import Activities from './Activities';
+import CreateUserButton from './CreateUserButton';
 
 const {Option} = Select;
 
-interface DataType {
+interface UserType {
     key: string;
     name: string;
     role: string;
 }
 
-const {Search} = Input;
-
-const data: DataType[] = [
-    {
-        key: '1',
-        name: 'John Brown',
-        role: 'Admin',
-    },
-    {
-        key: '2',
-        name: 'Jim Green',
-        role: 'Auditor',
-    },
-    {
-        key: '3',
-        name: 'Joe Black',
-        role: 'Employee',
-    },
-    {
-        key: '4',
-        name: 'Patrik Řepa',
-        role: 'Admin',
-    },
-];
-
 const EmployeesTable: React.FC = () => {
-    const [filteredData, setFilteredData] = useState<DataType[]>(data);
-    const [selectedRecord, setSelectedRecord] = useState<DataType | undefined>(undefined);
+    const {t} = useTranslation();
+    const [data, setData] = useState<UserType[]>([
+        {
+            key: '1',
+            name: 'John Brown',
+            role: 'Admin',
+        },
+        {
+            key: '2',
+            name: 'Jim Green',
+            role: 'Auditor',
+        },
+        {
+            key: '3',
+            name: 'Joe Black',
+            role: 'Employee',
+        },
+        {
+            key: '4',
+            name: 'Patrik Řepa',
+            role: 'Admin',
+        },
+    ]);
+    const [filteredData, setFilteredData] = useState<UserType[]>(data);
+    const [selectedRecord, setSelectedRecord] = useState<UserType | undefined>(undefined);
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [form] = Form.useForm();
 
-    useEffect(() => {
-        form.resetFields();
-    }, [form, selectedRecord]);
-
     const handleSearch = (value: string) => {
-        // Filter the data based on the search value
         const filtered = data.filter(item =>
             item.name.toLowerCase().includes(value.toLowerCase())
         );
         setFilteredData(filtered);
     };
 
-    const handleDelete = (record: DataType) => {
+    const handleDelete = (record: UserType) => {
         const updatedData = filteredData.filter(item => item.key !== record.key);
         setFilteredData(updatedData);
     };
 
-    const handleEdit = (record: DataType) => {
+    const handleEdit = (record: UserType) => {
         setSelectedRecord(record);
         setModalVisible(true);
         form.setFieldsValue({role: record.role});
     };
 
     const handleModalOk = () => {
-        form.validateFields().then(values => {
-            // Update the record with new values
-            const updatedData = filteredData.map(item => {
-                if (item.key === selectedRecord?.key) {
-                    return {
-                        ...item,
-                        name: values.name,
-                        role: values.role,
-                    };
-                }
-                return item;
+        form
+            .validateFields()
+            .then(values => {
+                const updatedData = filteredData.map(item => {
+                    if (item.key === selectedRecord?.key) {
+                        return {
+                            ...item,
+                            name: values.name,
+                            role: values.role,
+                        };
+                    }
+                    return item;
+                });
+                setFilteredData(updatedData);
+                setModalVisible(false);
+                setSelectedRecord(undefined);
+            })
+            .catch(error => {
+                console.log('Form validation error:', error);
             });
-            setFilteredData(updatedData);
-            setModalVisible(false);
-            setSelectedRecord(undefined);
-        });
     };
 
     const handleModalCancel = () => {
@@ -90,15 +88,15 @@ const EmployeesTable: React.FC = () => {
         setSelectedRecord(undefined);
     };
 
-    const columns: ColumnsType<DataType> = [
+    const columns: ColumnsType<UserType> = [
         {
-            title: 'Name',
+            title: t('name'),
             dataIndex: 'name',
             key: 'name',
             render: (text: string) => <a>{text}</a>,
         },
         {
-            title: 'Role',
+            title: t('role'),
             dataIndex: 'role',
             key: 'role',
             render: (text: string) => {
@@ -114,24 +112,23 @@ const EmployeesTable: React.FC = () => {
             },
         },
         {
-            title: 'User Administration',
+            title: t('useradministration'),
             key: 'action',
-            render: (_: any, record: DataType) => (
+            render: (_: any, record: UserType) => (
                 <Space size="middle">
-                    <a onClick={() => handleEdit(record)}>Edit</a>
-                    <a onClick={() => handleDelete(record)}>Delete</a>
+                    <a onClick={() => handleEdit(record)}>{t('edit')}</a>
+                    <a onClick={() => handleDelete(record)}>{t('delete')}</a>
                 </Space>
             ),
         },
     ];
 
-
     return (
         <>
-            <Search
+            <Input.Search
                 style={{maxWidth: '220px', marginLeft: 'auto', marginBottom: '10px'}}
-                placeholder="Search for a name"
-                enterButton="Search"
+                placeholder={String(t('searchforname'))}
+                enterButton={t('search')}
                 size="middle"
                 onSearch={handleSearch}
             />
@@ -140,7 +137,7 @@ const EmployeesTable: React.FC = () => {
             <Table columns={columns} dataSource={filteredData}/>
 
             <Modal
-                title="Edit Record"
+                title={t('editrecord')}
                 visible={modalVisible}
                 onOk={handleModalOk}
                 onCancel={handleModalCancel}
@@ -149,24 +146,29 @@ const EmployeesTable: React.FC = () => {
                       style={{width: '80%', display: 'flex', flexDirection: 'column'}}>
                     <Form.Item
                         name="name"
-                        label="Name"
-                        rules={[{required: true, message: 'Please enter a name'}]}
+                        label={t('name')}
+                        rules={[{required: true, message: String(t('pleasename'))}]}
                     >
                         <Input/>
                     </Form.Item>
                     <Form.Item
                         name="role"
-                        label="Roles"
-                        rules={[{required: true, message: 'Please select a role'}]}
+                        label={t('roles')}
+                        rules={[{required: true, message: String(t('pleaseselectrole'))}]}
                     >
                         <Select>
-                            <Option style={{color: 'red'}} value="Admin">Admin</Option>
-                            <Option style={{color: 'green'}} value="Auditor">Auditor</Option>
-                            <Option style={{color: 'blue'}} value="Employee">Employee</Option>
+                            <Option style={{color: 'red'}} value="Admin">
+                                {t('admin')}
+                            </Option>
+                            <Option style={{color: 'green'}} value="Auditor">
+                                {t('auditor')}
+                            </Option>
+                            <Option style={{color: 'blue'}} value="Employee">
+                                {t('employee')}
+                            </Option>
                         </Select>
                     </Form.Item>
                 </Form>
-
             </Modal>
         </>
     );
