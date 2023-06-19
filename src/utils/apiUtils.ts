@@ -76,7 +76,7 @@ const del = async (link: string) => {
 //         });
 // };
 
-const basicAuth = btoa("user:user");
+const basicAuth = btoa("advisor:advisor");
 
 const token = async () => {
     const response = await fetch(fetchUrl + "/auth/token",

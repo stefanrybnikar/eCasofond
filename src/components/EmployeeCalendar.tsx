@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import {EventContentArg} from '@fullcalendar/core';
-import {Popconfirm, Spin} from 'antd';
+import {Divider, Popconfirm, Spin} from 'antd';
 import {DeleteOutlined} from '@ant-design/icons';
 import {useTranslation} from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../utils/hooks';
@@ -21,14 +21,9 @@ const EmployeeCalendar: React.FC = () => {
     const [] = useState<string>('');
     const dispatch = useAppDispatch();
 
-    const currentUserId = 2; //TODO HARD CODED NEED TO REPLACE LATER
+    const currentUserId = 1; //TODO HARD CODED NEED TO REPLACE LATER
     
-    const userEntries = useAppSelector(state => state.entries.entries.filter(entry => entry.userId === currentUserId)).map(entry => { //remove map function afetr day value is implemented on backend, aiwen pls
-        return {
-            day: '2023-06-16',
-            ...entry
-        }
-    });
+    const userEntries = useAppSelector(state => state.entries.entries.filter(entry => entry.userId === currentUserId));
 
     const entriesStatus = useAppSelector(state => state.entries.status);
 
@@ -67,10 +62,12 @@ const EmployeeCalendar: React.FC = () => {
         const entries = content.event.extendedProps.entries;
         let totalHours = 0;
         let isHoliday = false;
+        let holidayId = 0;
         entries.forEach((entry: any) => {
             totalHours += entry.hourCount;
             if (entry.typeId === HOLIDAY_ID){
-                isHoliday = true
+                isHoliday = true;
+                holidayId = entry.id;
             }
         });
 
@@ -79,7 +76,12 @@ const EmployeeCalendar: React.FC = () => {
                 {
                     isHoliday
                     ?
-                    <HolidayTag/>
+                    <>
+                     <HolidayTag/>
+                        <Popconfirm title="Do you want to confirm deletion?" onConfirm={() => handleDeleteEntry(holidayId)}>
+                            <DeleteOutlined key={holidayId}/>
+                        </Popconfirm>
+                    </>
                     :
                     <div>
                         <div style={{ padding: 10, paddingLeft: '10%', fontWeight: 'bold'}}>
@@ -107,6 +109,7 @@ const EmployeeCalendar: React.FC = () => {
                                     </Popconfirm>
                                 </div>
                             ))}
+                            <Divider/>
                     </div>
                 }
             </>

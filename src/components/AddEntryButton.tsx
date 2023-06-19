@@ -27,7 +27,7 @@ const AddEntryButton: React.FC = () => {
     const {t} = useTranslation();
     const dispatch = useAppDispatch();
     
-    const currentUserId = 2; //TODO HARD CODED NEED TO REPLACE LATER
+    const currentUserId = 1; //TODO HARD CODED NEED TO REPLACE LATER
     
     const [addEntryType, setAddEntryType] = useState<string | null>(null);
     const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -68,7 +68,7 @@ const AddEntryButton: React.FC = () => {
             typeId,
             description,
             hourCount,
-            //day
+            day: day.format("YYYY-MM-DD"),
         }));
 
         setTypeId(undefined);
@@ -89,19 +89,19 @@ const AddEntryButton: React.FC = () => {
 
         const days = iterateDateRange(holidayRange[0], holidayRange[1]);
         
-        //--should work when day vale is added to db structure, currently would make a mess
-        // days.forEach(day => {
-        //     dispatch(addNewEntry({
-        //         userId: currentUserId,
-        //         typeId: HOLIDAY_ID,
-        //         description: holidayDescription,
-        //         hourCount: 0,
-        //         //day
-        //     }));
-        // });
 
-        // setHolidayRange(undefined);
-        // setHolidayDescription(undefined);
+        days.forEach(day => {
+            dispatch(addNewEntry({
+                userId: currentUserId,
+                typeId: HOLIDAY_ID,
+                description: holidayDescription,
+                hourCount: 0,
+                day: day.format("YYYY-MM-DD"),
+            }));
+        });
+
+        setHolidayRange(undefined);
+        setHolidayDescription(undefined);
         setModalVisible(false)
     };
 
