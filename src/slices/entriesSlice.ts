@@ -14,6 +14,7 @@ export const addNewEntry = createAsyncThunk(
     'entries/addNewEntry',
     async (initialEntry: AddEntryBody) => {
         const response = await client.post('/entry/add', initialEntry);
+        console.log(response)
         return response.data;
     }
 );
@@ -58,7 +59,7 @@ const entriesSlice = createSlice({
             })
             .addCase(fetchEntries.fulfilled, (state, action) => {
                 state.status = 'succeeded'
-                state.entries = action.payload
+                state.entries = (action.payload ? action.payload : [])
             })
             .addCase(fetchEntries.rejected, (state, action) => {
                 state.status = 'failed'
@@ -108,4 +109,5 @@ type AddEntryBody = {
     typeId: number;
     description: string;
     hourCount: number;
+    day: string;
 }
