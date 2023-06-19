@@ -23,13 +23,13 @@ const load = async () => {
 
   await client.token() // sets up bearer token for other api calls
   
-  store.dispatch(fetchCompanies());
-  store.dispatch(fetchEntries());
-  store.dispatch(fetchProfessions());
-  store.dispatch(fetchUsers());
-  store.dispatch(fetchEntryTypes());
-  store.dispatch(fetchRoles());
-  store.dispatch(fetchProfessionTypeEntryTypes());
+  // store.dispatch(fetchCompanies());
+  // store.dispatch(fetchEntries());
+  // store.dispatch(fetchProfessions());
+  // store.dispatch(fetchUsers());
+  // store.dispatch(fetchEntryTypes());
+  // store.dispatch(fetchRoles());
+  // store.dispatch(fetchProfessionTypeEntryTypes());
 }
 
 load()
