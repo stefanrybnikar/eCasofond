@@ -35,10 +35,10 @@ export const deleteUser = createAsyncThunk(
 );
 
 interface UsersState {
-    users: any[];
+    users: User[];
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: any;
-}
+};
 
 const initialState: UsersState = {
     users: [],
@@ -102,7 +102,7 @@ type UpdateUserBody = {
     username: string;
     oldPassword: string;
     password: string;
-}
+};
 
 type AddUserBody = {
     companyId : number;
@@ -112,4 +112,14 @@ type AddUserBody = {
     email: string;
     username: string;
     password: string;
-}
+};
+
+type User = {
+    id: number;
+    username: string;
+    email: string;
+    displayName: string;
+    companyId: number;
+    roleId: number;
+    professionTypeId: number;
+};
