@@ -33,15 +33,15 @@ const EmployeeCalendar: React.FC = () => {
     }, [entriesStatus, dispatch]);
 
 
-    const groupedEntriesByDays = userEntries.reduce((groups, obj) => {
-        const { day } = obj;
-        
+    const groupedEntriesByDays = userEntries.reduce((groups: { [key: string]: any[] }, obj) => {
+        const day = obj.day;
+      
         if (!groups[day]) {
           groups[day] = [];
         }
-        
+      
         groups[day].push(obj);
-        
+      
         return groups;
       }, {});
 

@@ -35,7 +35,7 @@ export const deleteEntryType = createAsyncThunk(
 );
 
 interface EntryTypesState {
-    entryTypes: any[],
+    entryTypes: EntryType[],
     status: 'idle' | 'loading' | 'succeeded' | 'failed',
     error: any
 }
@@ -99,8 +99,13 @@ export default entryTypesSlice.reducer;
 type UpdateEntryTypeBody = {
     id: number;
     name: string;
-}
+};
 
 type AddEntryTypeBody = {
     name: string;
-}
+};
+
+type EntryType = {
+    id: number;
+    name: string;
+};
