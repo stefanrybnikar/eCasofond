@@ -34,18 +34,8 @@ export const deleteUser = createAsyncThunk(
     }
 );
 
-// Define the createJob action creator using createAction
-export const createJob = createAction<User>('users/createJob');
-
-interface User {
-    // Define the user type here
-    id: number;
-    name: string;
-    // ...
-}
-
 interface UsersState {
-    users: User[];
+    users: any[];
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: any;
 }
@@ -59,11 +49,7 @@ const initialState: UsersState = {
 const usersSlice = createSlice({
     name: 'users',
     initialState,
-    reducers: {
-        createUser: (state, action: PayloadAction<User>) => {
-            state.users.push(action.payload);
-        },
-    },
+    reducers: {},
     extraReducers: (builder) => {
         builder
             .addCase(fetchUsers.pending, (state) => {
@@ -107,7 +93,6 @@ const usersSlice = createSlice({
     }
 });
 
-export const {createUser} = usersSlice.actions;
 export default usersSlice.reducer;
 
 type UpdateUserBody = {

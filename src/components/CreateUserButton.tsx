@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {Button, Modal, Form, Input, Select} from 'antd';
 import {useTranslation} from 'react-i18next';
 import {useDispatch} from 'react-redux';
-import {createUser} from "../slices/usersSlice";
 import {UserOutlined} from '@ant-design/icons';
 import {TFunction} from 'i18next';
 
@@ -22,7 +21,7 @@ const CreateUserButton: React.FC = () => {
         form
             .validateFields()
             .then((values) => {
-                dispatch(createUser(values)); // Dispatch the createUser action with form values
+                //dispatch(createUser(values)); // Dispatch the createUser action with form values
                 setModalVisible(false);
                 form.resetFields();
             })

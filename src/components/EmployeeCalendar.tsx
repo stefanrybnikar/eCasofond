@@ -7,7 +7,7 @@ import {DeleteOutlined} from '@ant-design/icons';
 import {useTranslation} from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../utils/hooks';
 import { deleteEntry, fetchEntries } from '../slices/entriesSlice';
-import { HOLIDAY_ID } from '../utils/constants';
+import { HOLIDAY_COLOR, HOLIDAY_ID } from '../utils/constants';
 
 interface CalendarEvent {
     start: string;
@@ -144,7 +144,7 @@ const EmployeeCalendar: React.FC = () => {
 export default EmployeeCalendar;
 
 const HolidayTag: React.FC = () => (
-    <div style={{borderRadius: 5, background: '#1890FF', color: 'white', padding: 10, paddingInline: '10%'}}>
+    <div style={{borderRadius: 5, background: HOLIDAY_COLOR, color: 'white', padding: 10, paddingInline: '10%'}}>
         Holiday
     </div>
 )
