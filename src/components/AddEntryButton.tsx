@@ -3,8 +3,23 @@ import React, {useEffect, useState} from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../utils/hooks';
 import { fetchEntryTypes } from '../slices/entryTypesSlice';
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { addNewEntry } from '../slices/entriesSlice';
+import { HOLIDAY_ID } from '../utils/constants';
+
+const iterateDateRange = (startDate: Dayjs, endDate: Dayjs) => {
+  let currentDate = dayjs(startDate);
+  const finalDate = dayjs(endDate);
+
+  const dates: Dayjs[] = [];
+
+  while (currentDate.isBefore(finalDate) || currentDate.isSame(finalDate)) {
+    dates.push(currentDate);
+    currentDate = currentDate.add(1, 'day');
+  }
+
+  return dates;
+}
 
 const {RangePicker} = DatePicker;
 
@@ -17,13 +32,20 @@ const AddEntryButton: React.FC = () => {
     const [addEntryType, setAddEntryType] = useState<string | null>(null);
     const [modalVisible, setModalVisible] = useState<boolean>(false);
 
+
+    //job entry states
     const [hourCount, setHourCount] = useState<number | null>();
     const [typeId, setTypeId] = useState<number>();
     const [day, setDay] = useState<Dayjs | null>();
     const [description, setDescription] = useState<string>();
 
 
-    const entryTypes = useAppSelector(state => state.entryTypes.entryTypes).map(entryType => {
+    //holiday entry states
+    const [holidayRange, setHolidayRange] = useState<[Dayjs | null, Dayjs | null] | null>();
+    const [holidayDescription, setHolidayDescription] = useState<string>();
+
+
+    const entryTypes = useAppSelector(state => state.entryTypes.entryTypes).filter(entryType => entryType.id !== HOLIDAY_ID).map(entryType => {
         return {
             value: entryType.id,
             label: entryType.name
@@ -39,50 +61,48 @@ const AddEntryButton: React.FC = () => {
 
     const handleJobModalOk = async () => {
 
-        if (!typeId || !description || !hourCount) return;
+        if (!typeId || !description || !hourCount || !day) return;
 
-        console.log({
-            userId: currentUserId,
-            typeId,
-            description,
-            hourCount,
-        })
         await dispatch(addNewEntry({
             userId: currentUserId,
             typeId,
             description,
             hourCount,
+            //day
         }));
 
+        setTypeId(undefined);
+        setDescription(undefined);
+        setHourCount(undefined);
+        setDay(undefined);
+
         setModalVisible(false);
     };
 
-    const handleJobModalCancel = () => {
+    const handleModalCancel = () => {
         setModalVisible(false);
     };
 
-    const handleHolidayModalOk = () => {
-        const form = document.querySelector('#holidayForm') as HTMLFormElement;
-        form.dispatchEvent(new Event('submit'));
-        setModalVisible(false);
-    };
+    const handleHolidayModalOk = async () => {
 
-    const handleHolidayModalCancel = () => {
-        setModalVisible(false);
-    };
+        if (!holidayRange?.[0] || !holidayRange?.[1] || !holidayDescription) return;
 
-    const handleHolidayFormFinish = (values: any) => {
-        const {duration, description} = values;
+        const days = iterateDateRange(holidayRange[0], holidayRange[1]);
+        
+        //--should work when day vale is added to db structure, currently would make a mess
+        // days.forEach(day => {
+        //     dispatch(addNewEntry({
+        //         userId: currentUserId,
+        //         typeId: HOLIDAY_ID,
+        //         description: holidayDescription,
+        //         hourCount: 0,
+        //         //day
+        //     }));
+        // });
 
-        const startDate = duration[0].format('YYYY-MM-DD');
-        const endDate = duration[1].format('YYYY-MM-DD');
-
-        const newEntry = {
-            type: 'holiday',
-            description: description,
-        };
-
-        setModalVisible(false);
+        // setHolidayRange(undefined);
+        // setHolidayDescription(undefined);
+        setModalVisible(false)
     };
 
     useEffect(() => {
@@ -106,9 +126,9 @@ const AddEntryButton: React.FC = () => {
 
         <Modal
             title={t('addjob')}
-            visible={modalVisible && addEntryType === 'job'}
+            open={modalVisible && addEntryType === 'job'}
             onOk={handleJobModalOk}
-            onCancel={handleJobModalCancel}
+            onCancel={handleModalCancel}
         >
             <Form.Item label={t('timespent')}>
                 <InputNumber value={hourCount} onChange={setHourCount} min={1}/>
@@ -126,18 +146,16 @@ const AddEntryButton: React.FC = () => {
 
         <Modal
             title={t('addholiday')}
-            visible={modalVisible && addEntryType === 'holiday'}
+            open={modalVisible && addEntryType === 'holiday'}
             onOk={handleHolidayModalOk}
-            onCancel={handleHolidayModalCancel}
+            onCancel={handleModalCancel}
         >
-            <Form id="holidayForm" onFinish={handleHolidayFormFinish}>
-                <Form.Item name="duration" label={t('selectdate')}>
-                    <RangePicker/>
-                </Form.Item>
-                <Form.Item name="description" label={t('description')}>
-                    <Input.TextArea/>
-                </Form.Item>
-            </Form>
+            <Form.Item label={t('selectdate')}>
+                <RangePicker value={holidayRange} onChange={setHolidayRange}/>
+            </Form.Item>
+            <Form.Item label={t('description')}>
+                <Input.TextArea value={holidayDescription} onChange={e => setHolidayDescription(e.target.value)}/>
+            </Form.Item>
     </Modal>
     </>;
 };
