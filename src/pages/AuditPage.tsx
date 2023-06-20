@@ -12,7 +12,6 @@ const AuditPage: React.FC = () => {
     const dispatch = useAppDispatch();
 
 
-
     const users = useAppSelector(state => state.users.users);
     const usersStatus = useAppSelector(state => state.users.status);
 

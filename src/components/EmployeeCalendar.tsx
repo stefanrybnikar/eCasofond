@@ -88,7 +88,7 @@ const EmployeeCalendar: React.FC = () => {
                             {totalHours}h
                         </div>
                         {entries &&
-                            entries.map((entry: any) => (
+                            entries.map((entry: Entr) => (
                                 <div style={{display: 'flex'}}>
                                     <>
                                         <div style={{width: '10%'}}>

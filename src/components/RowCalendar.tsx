@@ -24,6 +24,7 @@ const WEEKEND_COLOR = "#E18C8C"; //weekend, day off etc
 const WORK_COLOR = "#52C41A";
 
 const RowCalendar: React.FC<Props> = ({entries, from, to}) => {
+    console.log(entries);
 
     const range = to.diff(from, 'day') + 1;
 
@@ -31,9 +32,11 @@ const RowCalendar: React.FC<Props> = ({entries, from, to}) => {
 
     for(let i = range; i > 0; i--)
     {
+        const day = dayjs().add(i, 'days');
+
         daysArr.push({
             n: i,
-            day: dayjs().add(i, 'days'),
+            day,
             entry_type: dayjs().add(i, 'days').get('day') < 5 ? ((i > 2 && i < 5) || (i === 6) ? HOLIDAY_ID : WORK_ID): 0,
         })
     }
