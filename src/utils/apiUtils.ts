@@ -1,4 +1,4 @@
-import { getToken, setToken } from "./authToken";
+import { getToken, setLoggedSession } from "./session";
 
 const serverUrl = "http://localhost:8080";
 const urlDir = "/v1";
@@ -80,7 +80,7 @@ const del = async (link: string) => {
 
 const token = async (username: string, password: string) => {
 
-    const basicAuth = btoa(`${  username}:${password}`);
+    const basicAuth = btoa(`${username}:${password}`);
 
     const response = await fetch(fetchUrl + "/auth/token",
         {
@@ -90,9 +90,18 @@ const token = async (username: string, password: string) => {
                 'Authorization': `Basic ${basicAuth}`
             }
         });
-    setToken(await response.json().then(response => response.data));
+
+    if(!response.ok) return false;
+
+    setLoggedSession(
+        username,
+        await response.json().then(response => response.data)
+    );
+    
     const token = getToken();
     authToken = token;
+
+    return true;
 };
 
 

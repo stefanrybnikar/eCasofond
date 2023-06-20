@@ -105,21 +105,21 @@ type UpdateUserBody = {
 };
 
 type AddUserBody = {
-    companyId : number;
+    companyId : number | null;
     roleId: number;
-    professionId: number;
+    professionId: number | null;
     displayName: string;
     email: string;
     username: string;
     password: string;
 };
 
-type User = {
+export type User = {
     id: number;
     username: string;
     email: string;
     displayName: string;
-    companyId: number;
+    companyId: number | null;
     roleId: number;
-    professionTypeId: number;
+    professionTypeId: number | null;
 };
