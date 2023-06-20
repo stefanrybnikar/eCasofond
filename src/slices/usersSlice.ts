@@ -35,7 +35,7 @@ export const deleteUser = createAsyncThunk(
 );
 
 interface UsersState {
-    users: any[];
+    users: User[];
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: any;
 };
