@@ -56,8 +56,8 @@ const entryTypesSlice = createSlice({
                 state.status = 'loading'
             })
             .addCase(fetchEntryTypes.fulfilled, (state, action) => {
-                state.status = 'succeeded'
-                state.entryTypes = state.entryTypes.concat(action.payload)
+                state.status = 'succeeded';
+                state.entryTypes = action.payload;
             })
             .addCase(fetchEntryTypes.rejected, (state, action) => {
                 state.status = 'failed'

@@ -6,25 +6,17 @@ import {TimePicker} from 'antd';
 import {Button, Dropdown, Menu, Modal, Input, Form, DatePicker} from 'antd';
 import {useTranslation} from 'react-i18next';
 
-interface CalendarEvent {
-    start: string;
-    entries: {
-        type: string;
-        time: number;
-        description?: string;
-    }[];
-}
-
 const EmployeeCalendar: React.FC = () => {
-    const {t} = useTranslation();
+    const {t} = useTranslation(); // Hook to access translation functions
     const {RangePicker} = DatePicker;
+    const App: React.FC = () => <TimePicker.RangePicker/>;
     const calendarRef = useRef<FullCalendar>(null);
     const [addEntryType, setAddEntryType] = useState<string | null>(null);
     const [modalVisible, setModalVisible] = useState<boolean>(false);
-    const [] = useState<number | undefined>(undefined);
-    const [] = useState<string>('');
+    const [entryTime, setEntryTime] = useState<number | undefined>(undefined);
+    const [entryDescription, setEntryDescription] = useState<string>('');
 
-    const events: CalendarEvent[] = [
+    const events = [
         {
             start: '2023-05-31',
             entries: [
@@ -80,7 +72,27 @@ const EmployeeCalendar: React.FC = () => {
     };
 
     const handleAddEvent = () => {
-        // logika přidání události
+        // Event addition logic
+        const newEvent = {
+            start: '2023-06-10',
+            entries: [
+                {
+                    type: addEntryType || 'New Event',
+                    time: entryTime || 0,
+                    description: entryDescription,
+                },
+            ],
+        };
+
+        if (calendarRef.current) {
+            calendarRef.current.getApi().addEvent(newEvent);
+        }
+
+        // Reset values
+        setAddEntryType(null);
+        setEntryTime(undefined);
+        setEntryDescription('');
+        setModalVisible(false);
     };
 
     const handleMenuClick = (e: any) => {
@@ -98,7 +110,6 @@ const EmployeeCalendar: React.FC = () => {
     const handleJobModalOk = () => {
         const form = document.querySelector('#jobForm') as HTMLFormElement;
         form.dispatchEvent(new Event('submit'));
-        setModalVisible(false);
     };
 
     const handleJobModalCancel = () => {
@@ -108,7 +119,6 @@ const EmployeeCalendar: React.FC = () => {
     const handleHolidayModalOk = () => {
         const form = document.querySelector('#holidayForm') as HTMLFormElement;
         form.dispatchEvent(new Event('submit'));
-        setModalVisible(false);
     };
 
     const handleHolidayModalCancel = () => {
@@ -116,51 +126,12 @@ const EmployeeCalendar: React.FC = () => {
     };
 
     const handleJobFormFinish = (values: any) => {
-        const {timeSpent, timeRange, description} = values;
-
-        const startTime = timeRange[0].format('YYYY-MM-DDTHH:mm:ss');
-        const endTime = timeRange[1].format('YYYY-MM-DDTHH:mm:ss');
-
-        const newEntry = {
-            type: 'job',
-            time: timeSpent,
-            description: description,
-        };
-
-        const newEvent = {
-            start: startTime,
-            end: endTime,
-            entries: [newEntry],
-        };
-
-        if (calendarRef.current) {
-            calendarRef.current.getApi().addEvent(newEvent);
-        }
-
+        console.log('Job Form values:', values);
         setModalVisible(false);
     };
 
     const handleHolidayFormFinish = (values: any) => {
-        const {duration, description} = values;
-
-        const startDate = duration[0].format('YYYY-MM-DD');
-        const endDate = duration[1].format('YYYY-MM-DD');
-
-        const newEntry = {
-            type: 'holiday',
-            description: description,
-        };
-
-        const newEvent = {
-            start: startDate,
-            end: endDate,
-            entries: [newEntry],
-        };
-
-        if (calendarRef.current) {
-            calendarRef.current.getApi().addEvent(newEvent);
-        }
-
+        console.log('Holiday Form values:', values);
         setModalVisible(false);
     };
 
