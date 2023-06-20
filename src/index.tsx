@@ -21,7 +21,7 @@ const root = ReactDOM.createRoot(
 
 const load = async () => {
 
-  await client.token() // sets up bearer token for other api calls
+  await client.token("advisor", "advisor") // sets up bearer token for other api calls
   
   // store.dispatch(fetchCompanies());
   // store.dispatch(fetchEntries());
