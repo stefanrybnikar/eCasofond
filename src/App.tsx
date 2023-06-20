@@ -14,37 +14,30 @@ import AuditDetailPage from './pages/AuditDetailPage';
 import AuditorPage from './pages/AuditorPage';
 import CompanyPage from './pages/CompanyPage';
 import ProfessionsPage from './pages/ProfessionsPage';
+import { useAppSelector } from './utils/hooks';
 
 function App() {
 
-    const [user, setUser] = useState('');
+    const userRoleId = useAppSelector(state => state.currentUser.user?.roleId)
 
     return (
         <div className="App">
             <BrowserRouter>
 
                 <Navbar/>
-                <Radio.Group options={[
-                    {label: 'Admin', value: 'Admin'},
-                    {label: 'Auditor', value: 'Auditor'},
-                    {label: 'Employee', value: 'Employee'},
-                ]}
-                             optionType='button'
-                             value={user}
-                             onChange={e => setUser(e.target.value)}
-                />  
-                <div style={{width: 200}}>current user[id]:<Input width={100} placeholder='current user userId'/></div>
-                <Divider/>
-
+                <br/>
                 <Routes>
                     <Route path="welcome" element={<WelcomePage/>}/>
 
                     {
-                        user === "" && <Route path="login" element={<LoginPage/>}/>
+                        userRoleId === undefined && <>
+                            <Route path="login" element={<LoginPage/>}/>
+                            <Route path="*" element={<Navigate to="login"/>}/>
+                        </>
                     }
 
                     {
-                        user === "Admin" && <>
+                        userRoleId === 2 && <>
                             <Route path='/' element={<CompanyPage/>}>
                                 <Route path="/" element={<Navigate to="employees"/>}/>
 
@@ -58,7 +51,7 @@ function App() {
                         </>
                     }
                     {
-                        user === "Auditor" && <>
+                        userRoleId === 1 && <>
                             <Route path='/' element={<AuditorPage/>}>
                                 <Route path='company/:companyId' element={<CompanyPage/>}>
 
@@ -73,7 +66,7 @@ function App() {
                         </>
                     }
                     {
-                        user === "Employee" && <>
+                        userRoleId === 3 && <>
                             <Route path='/' element={<EmployeePage/>}/>
                         </>
                     }

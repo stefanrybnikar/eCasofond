@@ -14,22 +14,14 @@ import { fetchUsers } from './slices/usersSlice';
 import { fetchEntryTypes } from './slices/entryTypesSlice';
 import { fetchRoles } from './slices/rolesSlice';
 import { fetchProfessionTypeEntryTypes } from './slices/professionTypeEntryTypesSlice';
+import { fetchCurrentUser } from './slices/currentUserSlice';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
 const load = async () => {
-
-  await client.token() // sets up bearer token for other api calls
-  
-  // store.dispatch(fetchCompanies());
-  // store.dispatch(fetchEntries());
-  // store.dispatch(fetchProfessions());
-  // store.dispatch(fetchUsers());
-  // store.dispatch(fetchEntryTypes());
-  // store.dispatch(fetchRoles());
-  // store.dispatch(fetchProfessionTypeEntryTypes());
+  store.dispatch(fetchCurrentUser());
 }
 
 load()
