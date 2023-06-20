@@ -37,10 +37,10 @@ export const deleteEntry = createAsyncThunk(
 );
 
 interface EntriesState {
-    entries: any[],
+    entries: Entry[],
     status: 'idle' | 'loading' | 'succeeded' | 'failed',
     error: any
-}
+};
 
 const initialState: EntriesState = {
     entries: [],
@@ -102,7 +102,7 @@ type UpdateEntryBody = {
     typeId: number;
     description: string;
     hourCount: number;
-}
+};
 
 type AddEntryBody = {
     userId: number;
@@ -110,4 +110,15 @@ type AddEntryBody = {
     description: string;
     hourCount: number;
     day: string;
-}
+};
+
+export type Entry = {
+    id: number;
+    userId: number;
+    typeId: number;
+    description: string;
+    hourCount: number;
+    created: string;
+    updated: string;
+    day: string;
+};

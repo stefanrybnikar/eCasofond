@@ -1,15 +1,15 @@
 import React, {useState} from 'react';
 import {Button, Modal, Form, Input, Select} from 'antd';
 import {useTranslation} from 'react-i18next';
-import {useDispatch} from 'react-redux';
 import {UserOutlined} from '@ant-design/icons';
 import {TFunction} from 'i18next';
+import { useAppDispatch } from '../utils/hooks';
 
 const {Option} = Select;
 
 const CreateUserButton: React.FC = () => {
     const {t}: { t: TFunction } = useTranslation();
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const [modalVisible, setModalVisible] = useState(false);
     const [form] = Form.useForm();
 
@@ -21,7 +21,6 @@ const CreateUserButton: React.FC = () => {
         form
             .validateFields()
             .then((values) => {
-                //dispatch(createUser(values)); // Dispatch the createUser action with form values
                 setModalVisible(false);
                 form.resetFields();
             })

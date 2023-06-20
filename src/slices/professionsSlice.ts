@@ -35,10 +35,10 @@ export const deleteProfession = createAsyncThunk(
 );
 
 interface ProfessionsState {
-    professions: any[],
+    professions: ProfessionType[],
     status: 'idle' | 'loading' | 'succeeded' | 'failed',
     error: any
-}
+};
 
 const initialState: ProfessionsState = {
     professions: [],
@@ -99,8 +99,13 @@ export default professionsSlice.reducer;
 type UpdateProfessionBody = {
     id: number;
     name: string;
-}
+};
 
 type AddProfessionBody = {
     name: string;
-}
+};
+
+type ProfessionType = {
+    id: number;
+    name: string;
+};

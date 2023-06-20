@@ -35,7 +35,7 @@ export const deleteCompany = createAsyncThunk(
 );
 
 interface CompaniesState {
-    companies: any[],
+    companies: Company[],
     status: 'idle' | 'loading' | 'succeeded' | 'failed',
     error: any
 }
@@ -100,8 +100,13 @@ export default companiesSlice.reducer;
 type UpdateCompanyBody = {
     id: number;
     name: string;
-}
+};
 
 type AddCompanyBody = {
     name: string;
-}
+};
+
+type Company = {
+    id: number; 
+    name: string;
+};

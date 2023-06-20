@@ -6,7 +6,7 @@ import {Divider, Popconfirm, Spin} from 'antd';
 import {DeleteOutlined} from '@ant-design/icons';
 import {useTranslation} from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../utils/hooks';
-import { deleteEntry, fetchEntries } from '../slices/entriesSlice';
+import { Entry, deleteEntry, fetchEntries } from '../slices/entriesSlice';
 import { HOLIDAY_COLOR, HOLIDAY_ID } from '../utils/constants';
 
 interface CalendarEvent {
@@ -33,15 +33,15 @@ const EmployeeCalendar: React.FC = () => {
     }, [entriesStatus, dispatch]);
 
 
-    const groupedEntriesByDays = userEntries.reduce((groups, obj) => {
-        const { day } = obj;
-        
+    const groupedEntriesByDays = userEntries.reduce((groups: { [key: string]: any[] }, obj) => {
+        const day = obj.day;
+      
         if (!groups[day]) {
           groups[day] = [];
         }
-        
+      
         groups[day].push(obj);
-        
+      
         return groups;
       }, {});
 
@@ -88,7 +88,7 @@ const EmployeeCalendar: React.FC = () => {
                             {totalHours}h
                         </div>
                         {entries &&
-                            entries.map((entry: Entr) => (
+                            entries.map((entry: Entry) => (
                                 <div style={{display: 'flex'}}>
                                     <>
                                         <div style={{width: '10%'}}>
