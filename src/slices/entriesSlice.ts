@@ -112,7 +112,7 @@ type AddEntryBody = {
     day: string;
 };
 
-type Entry = {
+export type Entry = {
     id: number;
     userId: number;
     typeId: number;
