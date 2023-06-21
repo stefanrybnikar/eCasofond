@@ -57,7 +57,7 @@ const companiesSlice = createSlice({
             })
             .addCase(fetchCompanies.fulfilled, (state, action) => {
                 state.status = 'succeeded'
-                state.companies = state.companies.concat(action.payload)
+                state.companies = (action.payload ? action.payload : [])
             })
             .addCase(fetchCompanies.rejected, (state, action) => {
                 state.status = 'failed'

@@ -32,7 +32,7 @@ const rolesSlice = createSlice({
             })
             .addCase(fetchRoles.fulfilled, (state, action) => {
                 state.status = 'succeeded'
-                state.roles = state.roles.concat(action.payload)
+                state.roles = (action.payload ? action.payload : [])
             })
             .addCase(fetchRoles.rejected, (state, action) => {
                 state.status = 'failed'

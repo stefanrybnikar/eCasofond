@@ -57,7 +57,7 @@ const professionsSlice = createSlice({
             })
             .addCase(fetchProfessions.fulfilled, (state, action) => {
                 state.status = 'succeeded'
-                state.professions = state.professions.concat(action.payload)
+                state.professions = (action.payload ? action.payload : [])
             })
             .addCase(fetchProfessions.rejected, (state, action) => {
                 state.status = 'failed'
