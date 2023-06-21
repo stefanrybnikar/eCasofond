@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '../utils/hooks';
 import { ProfessionType, deleteProfession, fetchProfessions } from '../slices/professionsSlice';
 import { EntryType, fetchEntryTypes } from '../slices/entryTypesSlice';
 import { fetchProfessionTypeEntryTypes } from '../slices/professionTypeEntryTypesSlice';
+import EditProfessionButton from '../components/EditProfessionButton';
 
 interface TableItem {
   key: string;
@@ -35,8 +36,11 @@ const ProfessionsPage: React.FC = () => {
     },[professionsStatus, entryTypesStatus, professionTypeEntryTypesStatus, dispatch]);
 
     type Data = {
-        profession: ProfessionType,
-        entryTypes: EntryType[]
+      profession: ProfessionType,
+      entryTypes: {
+          connectionId: number,
+          entryType: EntryType
+      }[]
     }
 
     const parsedProfessions = professions.map(profession => {
@@ -50,7 +54,10 @@ const ProfessionsPage: React.FC = () => {
             item => {
                 const entryType = entryTypes.find(entryType => entryType.id === item.entryTypeId);
                 if (entryType)
-                    data.entryTypes.push(entryType);
+                    data.entryTypes.push({
+                      connectionId: item.id,
+                      entryType
+                    });
             }
         );
 
@@ -88,10 +95,7 @@ const ProfessionsPage: React.FC = () => {
   const [addItemForm] = Form.useForm();
   const [isAddItemModalVisible, setIsAddItemModalVisible] = useState(false);
   const [isAddMoreModalVisible, setIsAddMoreModalVisible] = useState(false);
-  const [editItem, setEditItem] = useState<Data | null>(null);
-  const [editForm] = Form.useForm();
-  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-  const [deleteItem, setDeleteItem] = useState<any>(null);
+  const [deleteItem, setDeleteItem] = useState<Data>();
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
   const handleSearch = (value: string) => {
@@ -132,33 +136,17 @@ const ProfessionsPage: React.FC = () => {
     });
   };
 
-    const handleEdit = (record: Data) => {
-        setEditItem(record);
-        console.log(editItem);
-        setIsEditModalVisible(true);
-        editForm.setFieldsValue({
-            entryTypes: record.entryTypes,
-            profession: record.profession,
-        });
-    };
-
-    const handleEditSubmit = () => {
-        editForm.validateFields().then((values) => {
-            
-            console.log(values);
-            setIsEditModalVisible(false);
-        });
-    };
+  
   
   
 
-  const handleDelete = (record: TableItem) => {
+  const handleDelete = (record: Data) => {
     setDeleteItem(record);
     setIsDeleteModalVisible(true);
   };
 
   const handleConfirmDelete = () => {
-    if (deleteItem.profession.id) {
+    if (deleteItem?.profession.id) {
       dispatch(deleteProfession(deleteItem.profession.id))
     }
     setIsDeleteModalVisible(false);
@@ -173,16 +161,14 @@ const ProfessionsPage: React.FC = () => {
     {
         title: 'Activity',
         key: 'activity',
-        render: (record: any) => (<>{record.entryTypes.map((e: any) => <Tag>{e.name}</Tag>)}</>)
+        render: (record: Data) => (<>{record.entryTypes.map((e: any) => <Tag>{e.entryType.name}</Tag>)}</>)
     },
     {
         title: 'Action',
         key: 'action',
-        render: (text: string, record: any) => (
+        render: (text: string, record: Data) => (
             <span>
-            <Button type="link" onClick={() => handleEdit(record)}>
-                Edit
-            </Button>
+            <EditProfessionButton record={record} allEntryTypes={entryTypes}/>
             <Button type="link" onClick={() => handleDelete(record)}>
                 Delete
             </Button>
@@ -241,28 +227,6 @@ const ProfessionsPage: React.FC = () => {
           </Form.Item>
           <Form.Item name="profession" label="Profession" rules={[{ required: true }]}>
             <Select mode="multiple">
-              {professionOptions.map((profession) => (
-                <Select.Option key={profession} value={profession}>
-                  {profession}
-                </Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      <Modal
-        title="Edit Item"
-        open={isEditModalVisible}
-        onCancel={() => setIsEditModalVisible(false)}
-        onOk={handleEditSubmit}
-      >
-        <Form form={editForm} layout="vertical">
-          <Form.Item name="profession" label="Profession">
-            <AntdInput value={editItem?.profession.name}/>
-          </Form.Item>
-          <Form.Item name="activity" label="Activity">
-            <Select mode="multiple" defaultValue={editItem ? editItem.entryTypes.map(item => item.name) : []}>
               {professionOptions.map((profession) => (
                 <Select.Option key={profession} value={profession}>
                   {profession}
