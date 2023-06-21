@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Input, Button, Modal, Form, Input as AntdInput, Select } from 'antd';
+import { Table, Input, Button, Modal, Form, Input as AntdInput, Select, Tag } from 'antd';
 import { useAppDispatch, useAppSelector } from '../utils/hooks';
-import { fetchProfessions } from '../slices/professionsSlice';
-import { fetchEntryTypes } from '../slices/entryTypesSlice';
+import { ProfessionType, deleteProfession, fetchProfessions } from '../slices/professionsSlice';
+import { EntryType, fetchEntryTypes } from '../slices/entryTypesSlice';
 import { fetchProfessionTypeEntryTypes } from '../slices/professionTypeEntryTypesSlice';
 
 interface TableItem {
   key: string;
-  activity: string;
   profession: string;
+  activity: string;
 }
 
 
@@ -34,12 +34,53 @@ const ProfessionsPage: React.FC = () => {
             dispatch(fetchProfessionTypeEntryTypes());
     },[professionsStatus, entryTypesStatus, professionTypeEntryTypesStatus, dispatch]);
 
+    type Data = {
+        profession: ProfessionType,
+        entryTypes: EntryType[]
+    }
+
+    const parsedProfessions = professions.map(profession => {
+
+        const data: Data = {
+            profession: profession,
+            entryTypes: []
+        }
+
+        professionTypeEntryTypes.filter(item => item.professionTypeId === profession.id).forEach(
+            item => {
+                const entryType = entryTypes.find(entryType => entryType.id === item.entryTypeId);
+                if (entryType)
+                    data.entryTypes.push(entryType);
+            }
+        );
+
+        return data
+    });
+
+    // professionTypeEntryTypes.forEach(item => {
+    //     const existingItem = parsedProfessions.find(
+    //         formattedItem => formattedItem.profession.id === item.professionTypeId
+    //     );
+
+    //     const entryType = entryTypes.find(entryType => entryType.id === item.entryTypeId);
+
+    //     if (existingItem) {
+    //         existingItem.entryTypes.push(entryType);
+    //     } else {
+    //         const newItem = {
+    //             profession: professions.find(profession => profession.id ===item.professionTypeId),
+    //             entryTypes: [entryType]
+    //         };
+    //         parsedProfessions.push(newItem);
+    //     }
+    // });
+
 
   const [searchText, setSearchText] = useState('');
   const [data, setData] = useState<TableItem[]>([
-    { key: '1', activity: 'Driving', profession: 'Racer' },
-    { key: '2', activity: 'Cooking', profession: 'Chef' },
-    { key: '3', activity: 'Testing', profession: 'Tester' },
+    { key: '1', profession: 'Racer', activity: 'ss'},
+    { key: '2', profession: 'Chef', activity: 'ss'},
+    { key: '3', profession: 'Tester', activity: 'ss'},
   ]);
 
   const professionOptions = ['Racer', 'Chef', 'Tester', 'Engineer', 'Teacher'];
@@ -47,10 +88,10 @@ const ProfessionsPage: React.FC = () => {
   const [addItemForm] = Form.useForm();
   const [isAddItemModalVisible, setIsAddItemModalVisible] = useState(false);
   const [isAddMoreModalVisible, setIsAddMoreModalVisible] = useState(false);
-  const [editItem, setEditItem] = useState<TableItem | null>(null);
+  const [editItem, setEditItem] = useState<Data | null>(null);
   const [editForm] = Form.useForm();
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-  const [deleteItem, setDeleteItem] = useState<TableItem | null>(null);
+  const [deleteItem, setDeleteItem] = useState<any>(null);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
   const handleSearch = (value: string) => {
@@ -91,25 +132,23 @@ const ProfessionsPage: React.FC = () => {
     });
   };
 
-  const handleEdit = (record: TableItem) => {
-    setEditItem(record);
-    setIsEditModalVisible(true);
-    editForm.setFieldsValue({
-      activity: record.activity,
-      profession: record.profession.split(', '),
-    });
-  };
+    const handleEdit = (record: Data) => {
+        setEditItem(record);
+        console.log(editItem);
+        setIsEditModalVisible(true);
+        editForm.setFieldsValue({
+            entryTypes: record.entryTypes,
+            profession: record.profession,
+        });
+    };
 
-  const handleEditSubmit = () => {
-    editForm.validateFields().then((values) => {
-      const updatedData = data.map((item) =>
-        item.key === editItem?.key ? { ...item, ...values, profession: values.profession.join(', ') } : item
-      );
-  
-      setData(updatedData);
-      setIsEditModalVisible(false);
-    });
-  };
+    const handleEditSubmit = () => {
+        editForm.validateFields().then((values) => {
+            
+            console.log(values);
+            setIsEditModalVisible(false);
+        });
+    };
   
   
 
@@ -119,41 +158,36 @@ const ProfessionsPage: React.FC = () => {
   };
 
   const handleConfirmDelete = () => {
-    if (deleteItem) {
-      const updatedData = data.filter((item) => item.key !== deleteItem.key);
-      setData(updatedData);
+    if (deleteItem.profession.id) {
+      dispatch(deleteProfession(deleteItem.profession.id))
     }
     setIsDeleteModalVisible(false);
   };
 
-  const filteredData = data.filter((item) =>
-    item.activity.toLowerCase().includes(searchText.toLowerCase())
-  );
-
   const columns = [
     {
       title: 'Profession',
-      dataIndex: 'profession',
+      dataIndex: ['profession', 'name'],
       key: 'profession',
     },
     {
         title: 'Activity',
-        dataIndex: 'activity',
         key: 'activity',
+        render: (record: any) => (<>{record.entryTypes.map((e: any) => <Tag>{e.name}</Tag>)}</>)
     },
     {
-      title: 'Action',
-      key: 'action',
-      render: (text: string, record: TableItem) => (
-        <span>
-          <Button type="link" onClick={() => handleEdit(record)}>
-            Edit
-          </Button>
-          <Button type="link" onClick={() => handleDelete(record)}>
-            Delete
-          </Button>
-        </span>
-      ),
+        title: 'Action',
+        key: 'action',
+        render: (text: string, record: any) => (
+            <span>
+            <Button type="link" onClick={() => handleEdit(record)}>
+                Edit
+            </Button>
+            <Button type="link" onClick={() => handleDelete(record)}>
+                Delete
+            </Button>
+            </span>
+        ),
     },
   ];
 
@@ -172,7 +206,7 @@ const ProfessionsPage: React.FC = () => {
           Add More
         </Button>
       </div>
-      <Table columns={columns} dataSource={filteredData} />
+      <Table columns={columns} dataSource={parsedProfessions} />
       <Modal
         title="Add Item"
         open={isAddItemModalVisible}
@@ -224,11 +258,11 @@ const ProfessionsPage: React.FC = () => {
         onOk={handleEditSubmit}
       >
         <Form form={editForm} layout="vertical">
-          <Form.Item name="activity" label="Activity">
-            <AntdInput />
-          </Form.Item>
           <Form.Item name="profession" label="Profession">
-            <Select mode="multiple" defaultValue={editItem ? editItem.profession.split(', ') : []}>
+            <AntdInput value={editItem?.profession.name}/>
+          </Form.Item>
+          <Form.Item name="activity" label="Activity">
+            <Select mode="multiple" defaultValue={editItem ? editItem.entryTypes.map(item => item.name) : []}>
               {professionOptions.map((profession) => (
                 <Select.Option key={profession} value={profession}>
                   {profession}
@@ -245,7 +279,7 @@ const ProfessionsPage: React.FC = () => {
         onCancel={() => setIsDeleteModalVisible(false)}
         onOk={handleConfirmDelete}
       >
-        Are you sure you want to delete the activity "{deleteItem?.activity}"?
+        Are you sure you want to delete the activity "{deleteItem?.profession.name}"?
       </Modal>
     </div>
   );

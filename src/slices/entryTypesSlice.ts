@@ -105,7 +105,7 @@ type AddEntryTypeBody = {
     name: string;
 };
 
-type EntryType = {
+export type EntryType = {
     id: number;
     name: string;
 };
