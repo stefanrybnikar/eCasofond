@@ -1,4 +1,4 @@
-import { configureStore } from "@reduxjs/toolkit";
+import {configureStore} from "@reduxjs/toolkit";
 import companiesReducer from "../slices/companiesSlice";
 import usersReducer from "../slices/usersSlice";
 import currentUserReducer from "../slices/currentUserSlice";
@@ -9,16 +9,16 @@ import rolesReducer from "../slices/rolesSlice";
 import professionTypeEntryTypesReducer from "../slices/professionTypeEntryTypesSlice";
 
 const store = configureStore({
-  reducer: {
-    companies: companiesReducer,
-    currentUser: currentUserReducer,
-    users: usersReducer,
-    entries: entriesReducer,
-    professions: professionsReducer,
-    entryTypes: entryTypesReducer,
-    roles: rolesReducer,
-    professionTypeEntryTypes: professionTypeEntryTypesReducer
-  },
+    reducer: {
+        companies: companiesReducer,
+        currentUser: currentUserReducer,
+        users: usersReducer,
+        entries: entriesReducer,
+        professions: professionsReducer,
+        entryTypes: entryTypesReducer,
+        roles: rolesReducer,
+        professionTypeEntryTypes: professionTypeEntryTypesReducer
+    },
 });
 
 export type RootState = ReturnType<typeof store.getState>;

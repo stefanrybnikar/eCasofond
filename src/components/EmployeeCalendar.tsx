@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from '../utils/hooks';
 import { Entry, deleteEntry, fetchEntries } from '../slices/entriesSlice';
 import { HOLIDAY_COLOR, HOLIDAY_ID } from '../utils/constants';
 
+
 interface CalendarEvent {
     start: string;
     entries: any[];

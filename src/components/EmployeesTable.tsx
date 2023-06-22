@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Space, Table, Input, Modal, Form, Button, Select} from 'antd';
 import {ColumnsType} from 'antd/es/table';
 import {useTranslation} from 'react-i18next';
-import Activities from './Activities';
-import CreateUserButton from './CreateUserButton';
+import {useAppDispatch, useAppSelector} from "../utils/hooks";
+import {fetchUsers} from "../slices/usersSlice";
 
 const {Option} = Select;
 
@@ -12,45 +12,44 @@ interface UserType {
     name: string;
     role: string;
 }
-
 const EmployeesTable: React.FC = () => {
     const {t} = useTranslation();
-    const [data, setData] = useState<UserType[]>([
-        {
-            key: '1',
-            name: 'John Brown',
-            role: 'Admin',
-        },
-        {
-            key: '2',
-            name: 'Jim Green',
-            role: 'Auditor',
-        },
-        {
-            key: '3',
-            name: 'Joe Black',
-            role: 'Employee',
-        },
-        {
-            key: '4',
-            name: 'Patrik Řepa',
-            role: 'Admin',
-        },
-    ]);
+    const usersStatus = useAppSelector(state => state.users.status);
+    const users = useAppSelector(state => state.users.users);
+    const dispatch = useAppDispatch();
+    const [data, setData] = useState<UserType[]>([]);
     const [filteredData, setFilteredData] = useState<UserType[]>(data);
     const [selectedRecord, setSelectedRecord] = useState<UserType | undefined>(undefined);
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [form] = Form.useForm();
 
+    useEffect(() => {
+        setFilteredData(data);
+    }, [data]);
+
+    useEffect(() => {
+        if (usersStatus === 'idle') {
+            dispatch(fetchUsers());
+        }
+    }, [dispatch, usersStatus]);
+
+    useEffect(() => {
+        const formattedData = users.map((user: any) => ({
+            key: user.id.toString(),
+            name: user.username,
+            role: user.roleId,
+        }));
+        setData(formattedData);
+        setFilteredData(formattedData);
+    }, [users]);
+
     const handleSearch = (value: string) => {
-        const filtered = data.filter(item =>
-            item.name.toLowerCase().includes(value.toLowerCase())
-        );
+        const filtered = data.filter((item) => item.name.toLowerCase().includes(value.toLowerCase()));
         setFilteredData(filtered);
     };
 
     const handleDelete = (record: UserType) => {
-        const updatedData = filteredData.filter(item => item.key !== record.key);
+        const updatedData = filteredData.filter((item) => item.key !== record.key);
         setFilteredData(updatedData);
     };
 
@@ -63,22 +62,33 @@ const EmployeesTable: React.FC = () => {
     const handleModalOk = () => {
         form
             .validateFields()
-            .then(values => {
-                const updatedData = filteredData.map(item => {
-                    if (item.key === selectedRecord?.key) {
-                        return {
-                            ...item,
-                            name: values.name,
-                            role: values.role,
-                        };
-                    }
-                    return item;
-                });
-                setFilteredData(updatedData);
+            .then((values) => {
+                if (selectedRecord) {
+                    const updatedData = data.map((item) => {
+                        if (item.key === selectedRecord.key) {
+                            return {
+                                ...item,
+                                name: values.name,
+                                role: values.role,
+                            };
+                        }
+                        return item;
+                    });
+                    setData(updatedData);
+                    setFilteredData(updatedData); // Update filteredData with the updated data
+                } else {
+                    const newUser: UserType = {
+                        key: String(data.length + 1),
+                        name: values.name,
+                        role: values.role,
+                    };
+                    setData([...data, newUser]);
+                    setFilteredData([...filteredData, newUser]);
+                }
                 setModalVisible(false);
                 setSelectedRecord(undefined);
             })
-            .catch(error => {
+            .catch((error) => {
                 console.log('Form validation error:', error);
             });
     };
@@ -132,8 +142,14 @@ const EmployeesTable: React.FC = () => {
                 size="middle"
                 onSearch={handleSearch}
             />
-            <CreateUserButton/>
-            <Activities/>
+            <Button
+                style={{marginRight: '1rem', marginLeft: '1rem'}}
+                type="primary"
+                size="middle"
+                onClick={() => setModalVisible(true)}
+            >
+                {t('createuser+')}
+            </Button>
             <Table columns={columns} dataSource={filteredData}/>
 
             <Modal

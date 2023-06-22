@@ -74,7 +74,7 @@ const usersSlice = createSlice({
         builder
             .addCase(updateUser.fulfilled, (state, action) => {
                 const existingUser = state.users.find(user => user.id === action.payload.id);
-                if(existingUser) {
+                if (existingUser) {
                     Object.assign(existingUser, action.payload);
                 }
                 state.error = null;

@@ -1,6 +1,9 @@
 import React, {useState} from 'react';
 import {Button, Modal, Form, Input, Select} from 'antd';
 import {useTranslation} from 'react-i18next';
+import {useDispatch, useSelector} from 'react-redux';
+import {AppDispatch, RootState} from '../utils/store'; // Import AppDispatch and RootState from the store
+import {addNewUser} from '../slices/usersSlice';
 import {UserOutlined} from '@ant-design/icons';
 import {TFunction} from 'i18next';
 import { useAppDispatch } from '../utils/hooks';
@@ -13,6 +16,8 @@ const CreateUserButton: React.FC = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [form] = Form.useForm();
 
+    const error = useSelector((state: RootState) => state.users.error);
+
     const handleCreateUser = () => {
         setModalVisible(true);
     };
@@ -21,6 +26,7 @@ const CreateUserButton: React.FC = () => {
         form
             .validateFields()
             .then((values) => {
+                dispatch(addNewUser(values) as any); // Dispatch the addNewUser action with form values
                 setModalVisible(false);
                 form.resetFields();
             })
@@ -28,7 +34,6 @@ const CreateUserButton: React.FC = () => {
                 console.log('Form validation error:', error);
             });
     };
-
 
     const handleModalCancel = () => {
         setModalVisible(false);
@@ -72,6 +77,7 @@ const CreateUserButton: React.FC = () => {
                         </Select>
                     </Form.Item>
                 </Form>
+                {error && <div>Error: {error}</div>}
             </Modal>
         </>
     );
