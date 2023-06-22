@@ -2,8 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {Space, Table, Input, Modal, Form, Button, Select} from 'antd';
 import {ColumnsType} from 'antd/es/table';
 import {useTranslation} from 'react-i18next';
-import Activities from './Activities';
-import {updateUser, deleteUser} from '../slices/usersSlice';
+import {useAppDispatch, useAppSelector} from "../utils/hooks";
+import {fetchUsers} from "../slices/usersSlice";
 
 const {Option} = Select;
 
@@ -15,28 +15,10 @@ interface UserType {
 
 const EmployeesTable: React.FC = () => {
     const {t} = useTranslation();
-    const [data, setData] = useState<UserType[]>([
-        {
-            key: '1',
-            name: 'John Brown',
-            role: 'Admin',
-        },
-        {
-            key: '2',
-            name: 'Jim Green',
-            role: 'Auditor',
-        },
-        {
-            key: '3',
-            name: 'Joe Black',
-            role: 'Employee',
-        },
-        {
-            key: '4',
-            name: 'Patrik Řepa',
-            role: 'Admin',
-        },
-    ]);
+    const usersStatus = useAppSelector(state => state.users.status);
+    const users = useAppSelector(state => state.users.users);
+    const dispatch = useAppDispatch();
+    const [data, setData] = useState<UserType[]>([]);
     const [filteredData, setFilteredData] = useState<UserType[]>(data);
     const [selectedRecord, setSelectedRecord] = useState<UserType | undefined>(undefined);
     const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -45,6 +27,22 @@ const EmployeesTable: React.FC = () => {
     useEffect(() => {
         setFilteredData(data);
     }, [data]);
+
+    useEffect(() => {
+        if (usersStatus === 'idle') {
+            dispatch(fetchUsers());
+        }
+    }, [dispatch, usersStatus]);
+
+    useEffect(() => {
+        const formattedData = users.map((user: any) => ({
+            key: user.id.toString(),
+            name: user.username,
+            role: user.roleId,
+        }));
+        setData(formattedData);
+        setFilteredData(formattedData);
+    }, [users]);
 
     const handleSearch = (value: string) => {
         const filtered = data.filter((item) => item.name.toLowerCase().includes(value.toLowerCase()));
@@ -86,7 +84,7 @@ const EmployeesTable: React.FC = () => {
                         role: values.role,
                     };
                     setData([...data, newUser]);
-                    setFilteredData([...filteredData, newUser]); // Add the new user to filteredData as well
+                    setFilteredData([...filteredData, newUser]);
                 }
                 setModalVisible(false);
                 setSelectedRecord(undefined);
@@ -153,7 +151,6 @@ const EmployeesTable: React.FC = () => {
             >
                 {t('createuser+')}
             </Button>
-            <Activities/>
             <Table columns={columns} dataSource={filteredData}/>
 
             <Modal
