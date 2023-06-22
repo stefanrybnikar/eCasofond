@@ -5,6 +5,7 @@ import { ProfessionType, deleteProfession, fetchProfessions } from '../slices/pr
 import { EntryType, fetchEntryTypes } from '../slices/entryTypesSlice';
 import { fetchProfessionTypeEntryTypes } from '../slices/professionTypeEntryTypesSlice';
 import EditProfessionButton from '../components/EditProfessionButton';
+import AddProfessionButton from '../components/AddProfessionButton';
 
 interface TableItem {
   key: string;
@@ -94,51 +95,12 @@ const ProfessionsPage: React.FC = () => {
 
   const [addItemForm] = Form.useForm();
   const [isAddItemModalVisible, setIsAddItemModalVisible] = useState(false);
-  const [isAddMoreModalVisible, setIsAddMoreModalVisible] = useState(false);
   const [deleteItem, setDeleteItem] = useState<Data>();
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
   const handleSearch = (value: string) => {
     setSearchText(value);
   };
-
-  const handleAddItem = () => {
-    setIsAddItemModalVisible(true);
-  };
-
-  const handleAddMore = () => {
-    setIsAddMoreModalVisible(true);
-  };
-
-  const handleAddItemSubmit = () => {
-    addItemForm.validateFields().then((values) => {
-      const newItem: TableItem = {
-        key: Math.random().toString(),
-        activity: values.activity,
-        profession: values.profession,
-      };
-      setData([...data, newItem]);
-      setIsAddItemModalVisible(false);
-      addItemForm.resetFields();
-    });
-  };
-
-  const handleAddMoreSubmit = () => {
-    addItemForm.validateFields().then((values) => {
-      const newItem: TableItem = {
-        key: Math.random().toString(),
-        activity: values.activity,
-        profession: values.profession.join(', '),
-      };
-      setData([...data, newItem]);
-      setIsAddMoreModalVisible(false);
-      addItemForm.resetFields();
-    });
-  };
-
-  
-  
-  
 
   const handleDelete = (record: Data) => {
     setDeleteItem(record);
@@ -185,57 +147,9 @@ const ProfessionsPage: React.FC = () => {
           style={{ width: 200, marginRight: 8 }}
           onSearch={handleSearch}
         />
-        <Button type="primary" onClick={handleAddItem}>
-          Add Item
-        </Button>
-        <Button type="primary" onClick={handleAddMore}>
-          Add More
-        </Button>
+        <AddProfessionButton/>
       </div>
       <Table columns={columns} dataSource={parsedProfessions} />
-      <Modal
-        title="Add Item"
-        open={isAddItemModalVisible}
-        onCancel={() => setIsAddItemModalVisible(false)}
-        onOk={handleAddItemSubmit}
-      >
-        <Form form={addItemForm} layout="vertical">
-          <Form.Item name="activity" label="Activity" rules={[{ required: true }]}>
-            <AntdInput />
-          </Form.Item>
-          <Form.Item name="profession" label="Profession" rules={[{ required: true }]}>
-            <Select>
-              {professionOptions.map((profession) => (
-                <Select.Option key={profession} value={profession}>
-                  {profession}
-                </Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      <Modal
-        title="Add More"
-        open={isAddMoreModalVisible}
-        onCancel={() => setIsAddMoreModalVisible(false)}
-        onOk={handleAddMoreSubmit}
-      >
-        <Form form={addItemForm} layout="vertical">
-          <Form.Item name="activity" label="Activity" rules={[{ required: true, message:'Activity is required' }]}>
-            <AntdInput />
-          </Form.Item>
-          <Form.Item name="profession" label="Profession" rules={[{ required: true }]}>
-            <Select mode="multiple">
-              {professionOptions.map((profession) => (
-                <Select.Option key={profession} value={profession}>
-                  {profession}
-                </Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
-        </Form>
-      </Modal>
 
       <Modal
         title="Confirm Delete"
