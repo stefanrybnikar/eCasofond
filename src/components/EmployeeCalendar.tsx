@@ -1,138 +1,120 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import {EventContentArg} from '@fullcalendar/core';
-import {TimePicker} from 'antd';
-import {Button, Dropdown, Menu, Modal, Input, Form, DatePicker} from 'antd';
+import {Divider, Popconfirm, Spin} from 'antd';
+import {DeleteOutlined} from '@ant-design/icons';
 import {useTranslation} from 'react-i18next';
+import { useAppDispatch, useAppSelector } from '../utils/hooks';
+import { Entry, deleteEntry, fetchEntries } from '../slices/entriesSlice';
+import { HOLIDAY_COLOR, HOLIDAY_ID } from '../utils/constants';
+
+
+interface CalendarEvent {
+    start: string;
+    entries: any[];
+}
 
 const EmployeeCalendar: React.FC = () => {
-    const {t} = useTranslation(); // Hook to access translation functions
-    const {RangePicker} = DatePicker;
-    const App: React.FC = () => <TimePicker.RangePicker/>;
+    const {t} = useTranslation();
     const calendarRef = useRef<FullCalendar>(null);
-    const [addEntryType, setAddEntryType] = useState<string | null>(null);
-    const [modalVisible, setModalVisible] = useState<boolean>(false);
-    const [entryTime, setEntryTime] = useState<number | undefined>(undefined);
-    const [entryDescription, setEntryDescription] = useState<string>('');
+    const [] = useState<number | undefined>(undefined);
+    const [] = useState<string>('');
+    const dispatch = useAppDispatch();
 
-    const events = [
-        {
-            start: '2023-05-31',
-            entries: [
-                {
-                    type: 'Washing laptops',
-                    time: 4,
-                },
-                {
-                    type: 'Fixing cables',
-                    time: 3,
-                },
-            ],
-        },
-        {
-            start: '2023-06-06',
-            entries: [
-                {
-                    type: 'Washing laptops',
-                    time: 4,
-                },
-                {
-                    type: 'Fixing cables',
-                    time: 3,
-                },
-            ],
-        },
-    ];
+    const currentUserId = 1; //TODO HARD CODED NEED TO REPLACE LATER
+    
+    const userEntries = useAppSelector(state => state.entries.entries.filter(entry => entry.userId === currentUserId));
+
+    const entriesStatus = useAppSelector(state => state.entries.status);
+
+    useEffect(() => {
+        if(entriesStatus === 'idle')
+            dispatch(fetchEntries());
+    }, [entriesStatus, dispatch]);
+
+
+    const groupedEntriesByDays = userEntries.reduce((groups: { [key: string]: any[] }, obj) => {
+        const day = obj.day;
+      
+        if (!groups[day]) {
+          groups[day] = [];
+        }
+      
+        groups[day].push(obj);
+      
+        return groups;
+      }, {});
+
+
+    const events: CalendarEvent[] = Object.keys(groupedEntriesByDays).map((key, value) => {
+        return {
+            start: key,
+            entries: groupedEntriesByDays[key]
+        }
+    });
+
+    const handleDeleteEntry = (id: number) => {
+        console.log(id);
+        dispatch(deleteEntry(id));
+    }
 
     const customEvent = (content: EventContentArg) => {
         const entries = content.event.extendedProps.entries;
+        let totalHours = 0;
+        let isHoliday = false;
+        let holidayId = 0;
+        entries.forEach((entry: any) => {
+            totalHours += entry.hourCount;
+            if (entry.typeId === HOLIDAY_ID){
+                isHoliday = true;
+                holidayId = entry.id;
+            }
+        });
 
         return (
             <>
-                {entries &&
-                    entries.map((entry: any) => (
-                        <div style={{display: 'flex'}}>
-                            <div style={{width: '10%'}}>
-                                <span style={{color: '#52C41A'}}>•</span>
-                            </div>
-                            <div
-                                style={{
-                                    width: '80%',
-                                    textOverflow: 'ellipsis',
-                                    overflow: 'hidden',
-                                }}
-                            >
-                                {entry.time}h - {entry.type}
-                            </div>
+                {
+                    isHoliday
+                    ?
+                    <>
+                     <HolidayTag/>
+                        <Popconfirm title="Do you want to confirm deletion?" onConfirm={() => handleDeleteEntry(holidayId)}>
+                            <DeleteOutlined key={holidayId}/>
+                        </Popconfirm>
+                    </>
+                    :
+                    <div>
+                        <div style={{ padding: 10, paddingLeft: '10%', fontWeight: 'bold'}}>
+                            {totalHours}h
                         </div>
-                    ))}
+                        {entries &&
+                            entries.map((entry: Entry) => (
+                                <div style={{display: 'flex'}}>
+                                    <>
+                                        <div style={{width: '10%'}}>
+                                            <span style={{color: '#52C41A'}}>•</span>
+                                        </div>
+                                        <div
+                                            style={{
+                                                width: '80%',
+                                                textOverflow: 'ellipsis',
+                                                overflow: 'hidden',
+                                            }}
+                                        >
+                                            {entry.hourCount}h - {entry.description}
+                                        </div>
+                                    </>
+                                    <Popconfirm title="Do you want to confirm deletion?" onConfirm={() => handleDeleteEntry(entry.id)}>
+                                        <DeleteOutlined key={entry.id}/>
+                                    </Popconfirm>
+                                </div>
+                            ))}
+                            <Divider/>
+                    </div>
+                }
             </>
         );
-    };
-
-    const handleAddEvent = () => {
-        // Event addition logic
-        const newEvent = {
-            start: '2023-06-10',
-            entries: [
-                {
-                    type: addEntryType || 'New Event',
-                    time: entryTime || 0,
-                    description: entryDescription,
-                },
-            ],
-        };
-
-        if (calendarRef.current) {
-            calendarRef.current.getApi().addEvent(newEvent);
-        }
-
-        // Reset values
-        setAddEntryType(null);
-        setEntryTime(undefined);
-        setEntryDescription('');
-        setModalVisible(false);
-    };
-
-    const handleMenuClick = (e: any) => {
-        setAddEntryType(e.key);
-        setModalVisible(true);
-    };
-
-    const addEntryMenu = (
-        <Menu onClick={handleMenuClick}>
-            <Menu.Item key="job">{t('addjob')}</Menu.Item>
-            <Menu.Item key="holiday">{t('addholiday')}</Menu.Item>
-        </Menu>
-    );
-
-    const handleJobModalOk = () => {
-        const form = document.querySelector('#jobForm') as HTMLFormElement;
-        form.dispatchEvent(new Event('submit'));
-    };
-
-    const handleJobModalCancel = () => {
-        setModalVisible(false);
-    };
-
-    const handleHolidayModalOk = () => {
-        const form = document.querySelector('#holidayForm') as HTMLFormElement;
-        form.dispatchEvent(new Event('submit'));
-    };
-
-    const handleHolidayModalCancel = () => {
-        setModalVisible(false);
-    };
-
-    const handleJobFormFinish = (values: any) => {
-        console.log('Job Form values:', values);
-        setModalVisible(false);
-    };
-
-    const handleHolidayFormFinish = (values: any) => {
-        console.log('Holiday Form values:', values);
-        setModalVisible(false);
     };
 
     const calendarOptions = {
@@ -156,49 +138,14 @@ const EmployeeCalendar: React.FC = () => {
     return (
         <div>
             <FullCalendar {...calendarOptions} ref={calendarRef}/>
-
-            <Dropdown overlay={addEntryMenu} trigger={['click']}>
-                <Button type="primary" size="large" style={{marginTop: '10px'}}>
-                    {t('add+')}
-                </Button>
-            </Dropdown>
-
-            <Modal
-                title={t('addjob')}
-                visible={modalVisible && addEntryType === 'job'}
-                onOk={handleJobModalOk}
-                onCancel={handleJobModalCancel}
-            >
-                <Form id="jobForm" onFinish={handleJobFormFinish}>
-                    <Form.Item name="timeSpent" label={t('timespent')}>
-                        <DatePicker/>
-                    </Form.Item>
-                    <Form.Item name="timeRange" label={t('timerange')}>
-                        <TimePicker.RangePicker/>
-                    </Form.Item>
-                    <Form.Item name="description" label={t('description')}>
-                        <Input.TextArea/>
-                    </Form.Item>
-                </Form>
-            </Modal>
-
-            <Modal
-                title={t('addholiday')}
-                visible={modalVisible && addEntryType === 'holiday'}
-                onOk={handleHolidayModalOk}
-                onCancel={handleHolidayModalCancel}
-            >
-                <Form id="holidayForm" onFinish={handleHolidayFormFinish}>
-                    <Form.Item name="duration" label={t('selectdate')}>
-                        <RangePicker/>
-                    </Form.Item>
-                    <Form.Item name="description" label={t('description')}>
-                        <Input.TextArea/>
-                    </Form.Item>
-                </Form>
-            </Modal>
         </div>
     );
 };
 
 export default EmployeeCalendar;
+
+const HolidayTag: React.FC = () => (
+    <div style={{borderRadius: 5, background: HOLIDAY_COLOR, color: 'white', padding: 10, paddingInline: '10%'}}>
+        Holiday
+    </div>
+)

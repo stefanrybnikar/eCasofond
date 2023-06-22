@@ -35,7 +35,7 @@ export const deleteCompany = createAsyncThunk(
 );
 
 interface CompaniesState {
-    companies: any[],
+    companies: Company[],
     status: 'idle' | 'loading' | 'succeeded' | 'failed',
     error: any
 }
@@ -57,7 +57,7 @@ const companiesSlice = createSlice({
             })
             .addCase(fetchCompanies.fulfilled, (state, action) => {
                 state.status = 'succeeded'
-                state.companies = state.companies.concat(action.payload)
+                state.companies = (action.payload ? action.payload : [])
             })
             .addCase(fetchCompanies.rejected, (state, action) => {
                 state.status = 'failed'
@@ -100,8 +100,13 @@ export default companiesSlice.reducer;
 type UpdateCompanyBody = {
     id: number;
     name: string;
-}
+};
 
 type AddCompanyBody = {
     name: string;
-}
+};
+
+type Company = {
+    id: number; 
+    name: string;
+};

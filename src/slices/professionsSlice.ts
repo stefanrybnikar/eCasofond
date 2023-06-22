@@ -35,10 +35,10 @@ export const deleteProfession = createAsyncThunk(
 );
 
 interface ProfessionsState {
-    professions: any[],
+    professions: ProfessionType[],
     status: 'idle' | 'loading' | 'succeeded' | 'failed',
     error: any
-}
+};
 
 const initialState: ProfessionsState = {
     professions: [],
@@ -57,7 +57,7 @@ const professionsSlice = createSlice({
             })
             .addCase(fetchProfessions.fulfilled, (state, action) => {
                 state.status = 'succeeded'
-                state.professions = state.professions.concat(action.payload)
+                state.professions = (action.payload ? action.payload : [])
             })
             .addCase(fetchProfessions.rejected, (state, action) => {
                 state.status = 'failed'
@@ -99,8 +99,13 @@ export default professionsSlice.reducer;
 type UpdateProfessionBody = {
     id: number;
     name: string;
-}
+};
 
 type AddProfessionBody = {
     name: string;
-}
+};
+
+export type ProfessionType = {
+    id: number;
+    name: string;
+};

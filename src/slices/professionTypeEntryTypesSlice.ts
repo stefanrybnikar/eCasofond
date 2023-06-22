@@ -38,10 +38,10 @@ export const deleteProfessionTypeEntryType = createAsyncThunk(
 );
 
 interface ProfessionTypeEntryTypesState {
-    professionTypeEntryTypes: any[],
+    professionTypeEntryTypes: ProfessionTypeEntryType[],
     status: 'idle' | 'loading' | 'succeeded' | 'failed',
     error: any
-}
+};
 
 const initialState: ProfessionTypeEntryTypesState = {
     professionTypeEntryTypes: [],
@@ -60,7 +60,7 @@ const professionTypeEntryTypesSlice = createSlice({
             })
             .addCase(fetchProfessionTypeEntryTypes.fulfilled, (state, action) => {
                 state.status = 'succeeded'
-                state.professionTypeEntryTypes = state.professionTypeEntryTypes.concat(action.payload)
+                state.professionTypeEntryTypes = (action.payload ? action.payload : [])
             })
             .addCase(fetchProfessionTypeEntryTypes.rejected, (state, action) => {
                 state.status = 'failed'
@@ -102,9 +102,15 @@ type UpdateProfessionTypeEntryTypeBody = {
     id: number;
     professionTypeId: number;
     entryTypeId: number;
-}
+};
 
 type AddProfessionTypeEntryTypeBody = {
     professionTypeId: number;
     entryTypeId: number;
-}
+};
+
+type ProfessionTypeEntryType = {
+    id: number;
+    professionTypeId: number;
+    entryTypeId: number;
+};

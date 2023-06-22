@@ -4,13 +4,15 @@ import {useTranslation} from 'react-i18next';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../utils/store'; // Import AppDispatch and RootState from the store
 import {addNewUser} from '../slices/usersSlice';
+import {UserOutlined} from '@ant-design/icons';
 import {TFunction} from 'i18next';
+import { useAppDispatch } from '../utils/hooks';
 
 const {Option} = Select;
 
 const CreateUserButton: React.FC = () => {
     const {t}: { t: TFunction } = useTranslation();
-    const dispatch: AppDispatch = useDispatch(); // Define the type of dispatch as AppDispatch
+    const dispatch = useAppDispatch();
     const [modalVisible, setModalVisible] = useState(false);
     const [form] = Form.useForm();
 

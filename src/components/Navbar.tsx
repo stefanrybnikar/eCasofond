@@ -1,15 +1,27 @@
 import React, {useState, useEffect} from 'react';
-import {Layout, Space, Dropdown, Menu, Button, Avatar} from 'antd';
-import {UserOutlined} from '@ant-design/icons';
+import {Layout, Space, Dropdown, Menu, Button, Avatar, Popconfirm} from 'antd';
+import {UserOutlined, LogoutOutlined, LoginOutlined} from '@ant-design/icons';
 import {useTranslation} from 'react-i18next';
 import i18n from '../i18n';
+import { useAppDispatch, useAppSelector } from '../utils/hooks';
+import { clearSession } from '../utils/session';
+import { clearCurrentUser } from '../slices/currentUserSlice';
 
 const {Header} = Layout;
 
 const Navbar: React.FC = () => {
     const {t} = useTranslation();
+    const dispatch = useAppDispatch();
+
     const [selectedLanguageCode, setSelectedLanguageCode] = useState('en');
     const [selectedLanguage, setSelectedLanguage] = useState(t('english'));
+
+    const currentUser = useAppSelector(state => state.currentUser.user);
+
+    const handleLogout = () => {
+        clearSession();
+        dispatch(clearCurrentUser());
+    }
 
     const changeLanguage = (language: string) => {
         i18n.changeLanguage(language);
@@ -54,8 +66,15 @@ const Navbar: React.FC = () => {
                             {t('languages')} {selectedLanguage}
                         </Button>
                     </Dropdown>
-                    <span>User Name</span>
-                    <Avatar icon={<UserOutlined/>}/>
+                    {currentUser &&
+                        <>
+                            <span>{currentUser?.displayName}</span>
+                            <Avatar icon={<UserOutlined/>}/>
+                            <Popconfirm  title="Do you really want to log out?" onConfirm={handleLogout} placement='left' arrow={false}>
+                                <LogoutOutlined/>
+                            </Popconfirm>
+                        </>
+                    }
                 </Space>
             </Header>
         </Layout>

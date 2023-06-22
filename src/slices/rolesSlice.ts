@@ -10,10 +10,10 @@ export const fetchRoles = createAsyncThunk(
 );
 
 interface RolesState {
-    roles: any[],
+    roles: Role[],
     status: 'idle' | 'loading' | 'succeeded' | 'failed',
     error: any
-}
+};
 
 const initialState: RolesState = {
     roles: [],
@@ -32,7 +32,7 @@ const rolesSlice = createSlice({
             })
             .addCase(fetchRoles.fulfilled, (state, action) => {
                 state.status = 'succeeded'
-                state.roles = state.roles.concat(action.payload)
+                state.roles = (action.payload ? action.payload : [])
             })
             .addCase(fetchRoles.rejected, (state, action) => {
                 state.status = 'failed'
@@ -42,3 +42,10 @@ const rolesSlice = createSlice({
 });
 
 export default rolesSlice.reducer;
+
+type Role = {
+    id: number;
+    name: string;
+    level: number | null;
+    write: boolean | null;
+};

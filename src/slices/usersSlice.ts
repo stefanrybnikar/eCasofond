@@ -34,21 +34,11 @@ export const deleteUser = createAsyncThunk(
     }
 );
 
-// Define the createJob action creator using createAction
-export const createJob = createAction<User>('users/createJob');
-
-interface User {
-    // Define the user type here
-    id: number;
-    name: string;
-    // ...
-}
-
 interface UsersState {
     users: User[];
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: any;
-}
+};
 
 const initialState: UsersState = {
     users: [],
@@ -59,11 +49,7 @@ const initialState: UsersState = {
 const usersSlice = createSlice({
     name: 'users',
     initialState,
-    reducers: {
-        createUser: (state, action: PayloadAction<User>) => {
-            state.users.push(action.payload);
-        },
-    },
+    reducers: {},
     extraReducers: (builder) => {
         builder
             .addCase(fetchUsers.pending, (state) => {
@@ -71,7 +57,7 @@ const usersSlice = createSlice({
             })
             .addCase(fetchUsers.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state.users = action.payload;
+                state.users = (action.payload ? action.payload : [])
             })
             .addCase(fetchUsers.rejected, (state, action) => {
                 state.status = 'failed';
@@ -107,7 +93,6 @@ const usersSlice = createSlice({
     }
 });
 
-export const {createUser} = usersSlice.actions;
 export default usersSlice.reducer;
 
 type UpdateUserBody = {
@@ -117,14 +102,24 @@ type UpdateUserBody = {
     username: string;
     oldPassword: string;
     password: string;
-}
+};
 
 type AddUserBody = {
-    companyId: number;
+    companyId : number | null;
     roleId: number;
-    professionId: number;
+    professionId: number | null;
     displayName: string;
     email: string;
     username: string;
     password: string;
-}
+};
+
+export type User = {
+    id: number;
+    username: string;
+    email: string;
+    displayName: string;
+    companyId: number | null;
+    roleId: number;
+    professionTypeId: number | null;
+};

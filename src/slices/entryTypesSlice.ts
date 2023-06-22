@@ -35,7 +35,7 @@ export const deleteEntryType = createAsyncThunk(
 );
 
 interface EntryTypesState {
-    entryTypes: any[],
+    entryTypes: EntryType[],
     status: 'idle' | 'loading' | 'succeeded' | 'failed',
     error: any
 }
@@ -57,7 +57,7 @@ const entryTypesSlice = createSlice({
             })
             .addCase(fetchEntryTypes.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state.entryTypes = action.payload;
+                state.entryTypes = (action.payload ? action.payload : [])
             })
             .addCase(fetchEntryTypes.rejected, (state, action) => {
                 state.status = 'failed'
@@ -99,8 +99,13 @@ export default entryTypesSlice.reducer;
 type UpdateEntryTypeBody = {
     id: number;
     name: string;
-}
+};
 
 type AddEntryTypeBody = {
     name: string;
-}
+};
+
+export type EntryType = {
+    id: number;
+    name: string;
+};

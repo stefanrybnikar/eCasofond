@@ -1,8 +1,10 @@
+import { getToken, setLoggedSession } from "./session";
+
 const serverUrl = "http://localhost:8080";
 const urlDir = "/v1";
 const fetchUrl = serverUrl + urlDir;
 
-let authToken = "";
+let authToken = getToken();
 
 const get = async (link: string) => {
     return await fetch(fetchUrl + link,
@@ -76,9 +78,10 @@ const del = async (link: string) => {
 //         });
 // };
 
-const basicAuth = btoa("advisor:advisor");
+const token = async (username: string, password: string) => {
 
-const token = async () => {
+    const basicAuth = btoa(`${username}:${password}`);
+
     const response = await fetch(fetchUrl + "/auth/token",
         {
             method: 'POST',
@@ -87,7 +90,18 @@ const token = async () => {
                 'Authorization': `Basic ${basicAuth}`
             }
         });
-    authToken = await response.json().then(response => response.data);
+
+    if(!response.ok) return false;
+
+    setLoggedSession(
+        username,
+        await response.json().then(response => response.data)
+    );
+    
+    const token = getToken();
+    authToken = token;
+
+    return true;
 };
 
 
