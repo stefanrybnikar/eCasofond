@@ -105,7 +105,7 @@ type AddProfessionBody = {
     name: string;
 };
 
-type ProfessionType = {
+export type ProfessionType = {
     id: number;
     name: string;
 };
