@@ -12,7 +12,6 @@ interface UserType {
     name: string;
     role: string;
 }
-
 const EmployeesTable: React.FC = () => {
     const {t} = useTranslation();
     const usersStatus = useAppSelector(state => state.users.status);

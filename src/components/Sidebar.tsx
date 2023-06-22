@@ -57,7 +57,6 @@ const Sidebar: React.FC = () => {
     const filteredOptions = companies.filter((company) =>
         company.name.toLowerCase().includes(searchValue.toLowerCase())
     );
-
     return (
         <Sider style={{background: colorBgContainer}} width={300}>
             <Menu mode="inline" defaultSelectedKeys={['1']} defaultOpenKeys={['sub1']} style={{height: '100%'}}>
