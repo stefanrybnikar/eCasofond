@@ -11,6 +11,7 @@ import professionTypeEntryTypesReducer from "../slices/professionTypeEntryTypesS
 const store = configureStore({
     reducer: {
         companies: companiesReducer,
+        currentUser: currentUserReducer,
         users: usersReducer,
         entries: entriesReducer,
         professions: professionsReducer,
